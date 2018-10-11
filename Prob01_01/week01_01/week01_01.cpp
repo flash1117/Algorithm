@@ -3,63 +3,17 @@
 #include <string.h>
 #include <stdlib.h>
 
-void Swap(int *src, int *dst) {
+#define SIZE 100000
 
-	int temp;
-
-	temp = *src;
-	*src = *dst;
-	*dst = temp;
-}
-
-int blank_count(char *buffer) {
-
-	int count = 0;
-
-	for (int i = 0; i < strlen(buffer); i++)
-	{
-		if (buffer[i] == ' ')
-			count++;
-	}
-
-	return count;
-}
-
-int find_min(char *buffer, char *p, int M) {
-
-	int packet[100000];
-	int pos = 1;
-	int count = 0;
-	int min;
-
-	p = strtok(buffer, " ");
-	packet[0] = atoi(p);
-	while (p != NULL) { // input packet
-
-		p = strtok(NULL, " ");
-		packet[pos++] = atoi(p);
-
-	}
-
-	for (int i = 0; i < pos; i++) {
-
-		for (int j = 0; j < pos - count - 1; j++) {
-
-			if (packet[j] > packet[j + 1])
-				Swap(&packet[j], &packet[j + 1]);
-
-		}
-		count++;
-	}
-
-	count = 0;
-	min = packet[1] - packet[0];
-	for (int i = 0; i < M; i++) {
-		if (packet[i + 1] - packet[i] < min)
-			min = packet[i + 1] - packet[i];
-	}
-	
-	return min;
+// 오름차순으로 정렬할 때 사용하는 비교함수
+int static compare(const void* first, const void* second)
+{
+	if (*(int*)first > *(int*)second)
+		return 1;
+	else if (*(int*)first < *(int*)second)
+		return -1;
+	else
+		return 0;
 }
 
 int main() {
@@ -67,9 +21,12 @@ int main() {
 	int N; // chocolate number in packet
 	int M; // student number and always N>=M
 	int T; // test case number
-	int T_count=0; // test case count
-	char buffer[1000]; // file read line buffer
-	char *p; // use for strtok
+	int M_cnt = 0; // M count
+	int T_cnt = 0; // test case count
+	char buffer[SIZE]; // file read line buffer
+	int min = 0, t = 0;
+	int package[SIZE] = { 0, };
+	int index = 0;
 
 	FILE *fp = fopen("input01.txt", "r");
 
@@ -86,29 +43,26 @@ int main() {
 		return -1;
 	}
 
-	while (1) {
+	while (T_cnt != T) {
 
-		fgets(buffer, 1000, fp);
-		if (blank_count(buffer) == 1) { // input N, M
-			
-			p = strtok(buffer, " ");
-			N = atoi(p);
-			p = strtok(NULL, " ");
-			M = atoi(p);
+		M_cnt = 0;
+		index = 0;
+		fscanf(fp, "%d %d", &N, &M);
 
-			if (M > N) {
-				printf("err02 : There is a student who does not have chocolate!\n");
-				return -1;
-			}
-			T_count++;
+		while (M_cnt < M) {
+
+			fscanf(fp, "%d", &package[index]);
+			index++;
+			M_cnt++;
 		}
-		else {// packet array
-		
-			printf("min = %d\n", find_min(buffer, p, M));
-		
-		} 	
-		
-		if (T_count == T+1) break;
+
+		qsort(package, sizeof(package) / sizeof(int), sizeof(int), compare);
+		min = package[M - 1] - package[0];
+		for (int i = 1; i < N - M + 1; i++)
+			min = (min >(t = package[i + M - 1] - package[i]) ? t : min);
+		printf("min = %d\n", min);
+
+		T_cnt++;
 	}
 
 	fclose(fp);
