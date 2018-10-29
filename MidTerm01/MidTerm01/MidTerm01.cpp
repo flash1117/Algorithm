@@ -41,7 +41,7 @@ void complete(char buffer[], int row) {
 		r = temp % 10;
 		temp = temp / 10;
 
-		if (count == r)
+		if (count == r && temp == 0)
 			break;
 
 		graph[row][r] = 1;
