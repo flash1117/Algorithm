@@ -27,7 +27,7 @@ queue <int> Q;
 void DFS(int start) {
 
 	visit[start] = true;
-	cout << start;
+	cout << start<<" ";
 	for (int y : adjacent[start]) {
 		if (!visit[y]) {
 			DFS(y);
@@ -43,7 +43,7 @@ void BFS(int start) {
 	while (!Q.empty()) {
 		int x = Q.front();
 		Q.pop();
-		cout << x;
+		cout << x<<" ";
 		for (int y : adjacent[x]) {
 			if (!visit[y]) {
 				Q.push(y);
