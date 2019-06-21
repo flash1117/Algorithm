@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include <queue>
 
 using namespace std;
@@ -16,20 +17,20 @@ void BFS(int point) {
 
 		if (map[point][i]) {
 			q.push(i);
-			for (int j = 0; j < N; j++) {
-
-				if (map[i][j])
-					q.push(j);
-			}
-
+			matrix[point][i] = 1;
 		}
 	}
 
 	while (!q.empty()) {
-		int curY = q.front();
+		int cur = q.front();
 		q.pop();
-		map[point][curY] = 1;
+		for (int i = 0; i < N; i++) {
+			if (map[cur][i]&&!matrix[point][i]) {
+				q.push(i);
+				matrix[point][i] = 1;
+			}
 
+		}
 	}
 }
 
@@ -38,7 +39,7 @@ void print() {
 	for (int i = 0; i < N; i++) {
 
 		for (int j = 0; j < N; j++) {
-			cout << map[i][j];
+			cout << matrix[i][j]<<" ";
 			
 		}
 		cout << endl;
