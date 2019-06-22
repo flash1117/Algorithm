@@ -1,14 +1,15 @@
 #include <iostream>
 #include <cstring>
 #include <algorithm>
+#include <vector>
 #include <queue>
 
 using namespace std;
 
 int N;
+vector<int> ans;
 int map[26][26];
 int visited[26][26];
-int cnt[600];
 int add = 0;
 
 int dx[] = { 0,0,-1,1 };
@@ -23,7 +24,7 @@ bool isBoundary(int x, int y) {
 
 void BFS(int x, int y) {
 
-	cout << "in BFS";
+	int cnt = 0;
 	queue <pair<int, int>> q;
 	q.push({x,y});
 	visited[x][y] = 1;
@@ -31,6 +32,7 @@ void BFS(int x, int y) {
 	while (!q.empty()) {
 		int curX = q.front().first;
 		int curY = q.front().second;
+		cnt++;
 		q.pop();
 
 		for (int i = 0; i < 4; i++) {
@@ -41,13 +43,12 @@ void BFS(int x, int y) {
 			{
 				visited[nextX][nextY] = 1;
 				q.push({ nextX, nextY });
-				cnt[add]++;
 			}
 
 		}
 
 	}
-	add++;
+	ans.push_back(cnt);
 }
 
 int main() {
@@ -56,12 +57,17 @@ int main() {
 	memset(visited, 0, sizeof(visited));
 
 	cin >> N;
+
 	if (N < 5 || N > 25)
 		return -1;
 
+	string temp;
+
 	for (int i = 0; i < N; i++) {
+		cin >> temp;
 		for (int j = 0; j < N; j++) {
-			cin >> map[i][j];
+		
+			map[i][j] = temp[j] - '0';
 			
 		}
 	}
@@ -70,15 +76,15 @@ int main() {
 		for (int j = 0; j < N; j++) {
 			if (!visited[i][j] && map[i][j]) {
 				BFS(i, j);
-				cout << "test";
 			}
 				
 		}
 	}
 
-	sort(cnt, cnt + add);
-	for (int i = 0; i < add; i++)
-		cout << cnt[i] << endl;
+	sort(ans.begin(), ans.end());
+	cout << ans.size() << endl;
+	for (int i = 0; i < ans.size(); i++)
+		cout << ans[i] << endl;
 
 	return 0;
 }

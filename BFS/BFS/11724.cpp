@@ -7,6 +7,7 @@ using namespace std;
 int N, M;
 int map[1001][1001];
 bool visited[1001][1001];
+int cnt = 0;
 
 void BFS(int x) {
 
@@ -14,16 +15,27 @@ void BFS(int x) {
 
 	for (int i = 0; i < N; i++) {
 
-		if (map[x][i])
+		if (map[x][i]) {
 			q.push(i);
+			visited[x][i] = true;
+		}
+			
 	}
 
 	while (!q.empty()) {
+		int cur = q.front();
+		q.pop();
+		for (int i = 0; i < N; i++) {
 
+			if (map[cur][i] && !visited[cur][i])
+			{
+				visited[x][i] = true;
+				cnt++;
+			}
+		}
 
 
 	}
-
 
 }
 
@@ -45,6 +57,6 @@ int main() {
 	for (int i = 0; i < N; i++)
 		BFS(i);
 
-
+	cout << M-cnt;
 	return 0;
 }
