@@ -5,11 +5,13 @@
 
 #define pos pair<int,int>
 
-struct toma {
-	int x, y, cnt;
-};
-
 using namespace std;
+
+typedef struct {
+
+	int x, y, cnt;
+
+}tomato;
 
 int N, M;
 int map[1001][1001];
@@ -19,7 +21,6 @@ int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
 
 bool isRipe = false;
-int cnt = 0;
 vector <pos> vec;
 
 bool isBoundary(int x, int y) {
@@ -28,45 +29,35 @@ bool isBoundary(int x, int y) {
 	return true;
 }
 
+void print() {
 
-int BFS(int x, int y) {
-	queue<toma> tq;
-	tq.push({ 0,0,0 });
+	cout << endl;
+	for (int i = 0; i < N; i++) {
 
-	while (!tq.empty()) {
-		int cx = tq.front().x;
-		int cy = tq.front().y;
-		int ccnt = tq.front().cnt;
+		for (int j = 0; j < M; j++) {
 
-		for (int i = 0; i < 4; i++) {
-			int nx = cx + dx[i];
-			int ny = cy + dy[i];
-			if (map[nx][ny] == 0) {
-				tq.push({ nx,ny,ccnt + 1 });
-			}
-
+			cout << visited[i][j] << " ";
 		}
-
+		cout << endl;
 	}
 
+}
 
+int BFS(int x, int y) {
 
-
-
-
-
-	queue <pos> q;
+	queue <tomato> q;
 	
 	if (isRipe == false)
 		return 0;
 
-	q.push({ x,y });
+	q.push({ x,y,0 });
 	visited[x][y] = 1;
 
 	while (!q.empty()) {
 
-		int curX = q.front().first;
-		int curY = q.front().second;
+		int curX = q.front().x;
+		int curY = q.front().y;
+		int ccnt = q.front().cnt;
 		q.pop();
 
 		for (int i = 0; i < 4; i++) {
@@ -75,14 +66,18 @@ int BFS(int x, int y) {
 
 			if (isBoundary(nextX, nextY) && visited[nextX][nextY] == 0 && map[nextX][nextY] == 0)
 			{
-				q.push({ nextX, nextY });
+				q.push({ nextX, nextY, ccnt++ });
 				visited[nextX][nextY] = 1;
 				
+				print();
 			}
 
+			
 		}
-
+		
+		return ccnt;
 	}
+	
 }
 
 
@@ -101,6 +96,7 @@ bool isFullRipe() {
 
 int main() {
 	cin >> M >> N;
+	int ret =0;
 
 	if (M < 2 || N < 2 || M >1000 || N>1000)
 		return -1;
@@ -125,7 +121,7 @@ int main() {
 	}
 
 	for (int i = 0; i < vec.size(); i++) {
-		BFS(vec[i].first, vec[i].second);
+		ret = BFS(vec[i].first, vec[i].second);
 	}
 
 	if (!isFullRipe()) {
@@ -133,15 +129,8 @@ int main() {
 		return 0;
 
 	}
-		
-	else if (!isRipe) {
-		cout << "0";
-		return 0;
-
-	}
-		
 	else
-		cout << "cnt : " <<cnt;
-
+		cout << ret;
+		
 	return 0;
 }
