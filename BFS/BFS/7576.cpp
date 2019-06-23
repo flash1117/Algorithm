@@ -25,7 +25,7 @@ vector <pos> vec;
 
 bool isBoundary(int x, int y) {
 
-	if (x < 0 || y <0 || x>N || y>M) return false;
+	if (x < 0 || y <0 || x>N-1 || y>M-1) return false;
 	return true;
 }
 
@@ -43,7 +43,7 @@ void print() {
 
 }
 
-int BFS(int x, int y) {
+int BFS() {
 
 	queue <tomato> q;
 	
@@ -52,6 +52,7 @@ int BFS(int x, int y) {
 
 	q.push({ x,y,0 });
 	visited[x][y] = 1;
+	cout << x << y << endl;
 
 	while (!q.empty()) {
 
@@ -66,16 +67,14 @@ int BFS(int x, int y) {
 
 			if (isBoundary(nextX, nextY) && visited[nextX][nextY] == 0 && map[nextX][nextY] == 0)
 			{
-				q.push({ nextX, nextY, ccnt++ });
+				q.push({ nextX, nextY, ccnt+1 });
 				visited[nextX][nextY] = 1;
 				
-				print();
 			}
 
 			
 		}
 		
-		return ccnt;
 	}
 	
 }
@@ -120,9 +119,7 @@ int main() {
 
 	}
 
-	for (int i = 0; i < vec.size(); i++) {
-		ret = BFS(vec[i].first, vec[i].second);
-	}
+	ret = BFS();
 
 	if (!isFullRipe()) {
 		cout << "-1";
@@ -131,6 +128,5 @@ int main() {
 	}
 	else
 		cout << ret;
-		
 	return 0;
 }
