@@ -22,6 +22,7 @@ int dy[] = { -1,1,0,0 };
 
 bool isRipe = false;
 vector <pos> vec;
+int ret;
 
 bool isBoundary(int x, int y) {
 
@@ -50,11 +51,18 @@ int BFS() {
 	if (isRipe == false)
 		return 0;
 
-	q.push({ x,y,0 });
-	visited[x][y] = 1;
-	cout << x << y << endl;
+	for (int i = 0; i < vec.size(); i++) {
+		q.push({ vec[i].first, vec[i].second,0 });
+		visited[vec[i].first][vec[i].second] = 1;
+		cout << "vec : " << vec[i].first << vec[i].second << endl;
+
+	}
+	
 
 	while (!q.empty()) {
+
+
+		print();
 
 		int curX = q.front().x;
 		int curY = q.front().y;
@@ -69,7 +77,7 @@ int BFS() {
 			{
 				q.push({ nextX, nextY, ccnt+1 });
 				visited[nextX][nextY] = 1;
-				
+				ret = ccnt;
 			}
 
 			
@@ -95,7 +103,6 @@ bool isFullRipe() {
 
 int main() {
 	cin >> M >> N;
-	int ret =0;
 
 	if (M < 2 || N < 2 || M >1000 || N>1000)
 		return -1;
