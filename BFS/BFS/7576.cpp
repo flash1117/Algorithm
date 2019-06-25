@@ -52,9 +52,9 @@ int BFS() {
 		return 0;
 
 	for (int i = 0; i < vec.size(); i++) {
-		q.push({ vec[i].first, vec[i].second,0 });
+		q.push({ vec[i].first, vec[i].second, 0 });
 		visited[vec[i].first][vec[i].second] = 1;
-		cout << "vec : " << vec[i].first << vec[i].second << endl;
+//		cout << "vec : x, y, cnt" << vec[i].first << " , "<<vec[i].second<<endl;
 
 	}
 	
@@ -62,12 +62,15 @@ int BFS() {
 	while (!q.empty()) {
 
 
-		print();
+//		print();
 
 		int curX = q.front().x;
 		int curY = q.front().y;
 		int ccnt = q.front().cnt;
 		q.pop();
+
+//		cout << "queue x, y, cnt" << curX << " , " << curY << " , " << ccnt << endl;
+
 
 		for (int i = 0; i < 4; i++) {
 			int nextX = curX + dx[i];
@@ -78,13 +81,14 @@ int BFS() {
 				q.push({ nextX, nextY, ccnt+1 });
 				visited[nextX][nextY] = 1;
 				ret = ccnt;
+			//	cout << "nextX, nextY, ccnt : " << nextX << nextY << ccnt << endl;
 			}
 
 			
 		}
 		
 	}
-	
+	return ret;
 }
 
 
@@ -128,10 +132,15 @@ int main() {
 
 	ret = BFS();
 
-	if (!isFullRipe()) {
+	if (!isFullRipe() && isRipe == true) {
 		cout << "-1";
 		return 0;
 
+	}
+	else if (ret != 0 && ret != -1) {
+
+		cout << ret + 1;
+		return 0;
 	}
 	else
 		cout << ret;
