@@ -28,13 +28,16 @@ int dy[] = { -1,1,0,0 };
 
 
 void print() {
+	cout << endl;
 
 	for (int i = 0; i < M; i++) {
 
 		for (int j = 0; j < N; j++) {
 
-
-			cout << map[i][j];
+			if (visited[i][j])
+				cout << "1";
+			else
+				cout << "0";
 		}
 		cout << endl;
 	}
@@ -48,11 +51,12 @@ bool isBoundary(int x, int y) {
 }
 
 void BFS(int i, int j) {
-
+	cout << "BFS È½¼ö" << endl;
 	queue <pos> q;
 
 	q.push({ i,j,0 });
 	visited[i][j] = true;
+	cout << i<<","<< j ;
 	int ccnt;
 
 	while (!q.empty()) {
@@ -66,14 +70,14 @@ void BFS(int i, int j) {
 			int nextX = curX + dx[i];
 			int nextY = curY + dy[i];
 
-			if (isBoundary(nextX, nextY) && !visited[nextX][nextY] && map[nextX][nextY] ==0) {
+			if (isBoundary(nextX, nextY) && visited[nextX][nextY] == false && map[nextX][nextY] ==0) {
 				q.push({ nextX, nextY, ccnt+1 });
 				visited[nextX][nextY] = true;
+				print();
 			}
 
 		}
 	}
-	area++;
 	ret.push_back(ccnt);
 	
 }
@@ -95,6 +99,8 @@ int main() {
 			for (int j = N - right.x; j < N - left.x; j++) {
 
 				map[i][j] = 1;
+				if (map[i][j])
+					visited[i][j] = true;
 			}
 		}
 
@@ -107,6 +113,8 @@ int main() {
 			if (map[i][j] == 0 && visited[i][j] == false) {
 
 				BFS(i,j);
+				cout << "main¹® È½¼ö" << endl;
+				area++;
 			}
 
 		}
