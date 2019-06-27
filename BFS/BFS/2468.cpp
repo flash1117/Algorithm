@@ -7,7 +7,7 @@ using namespace std;
 int N;
 bool visited[101][101];
 int map[101][101];
-int maxSafe;
+int maxSafe=0;
 
 int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
@@ -41,6 +41,7 @@ void BFS(int basePoint) {
 
 	while (!q.empty()) {
 
+		int safeZone = 0;
 		int curX = q.front().first;
 		int curY = q.front().second;
 		q.pop();

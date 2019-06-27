@@ -3,7 +3,6 @@
 #include <queue>
 #include <algorithm>
 
-
 using namespace std;
 
 int M, N, K;
@@ -79,7 +78,7 @@ void BFS(int i, int j) {
 		}
 	}
 	ret.push_back(ccnt);
-	
+	area++;
 }
 
 int main() {
@@ -114,7 +113,6 @@ int main() {
 
 				BFS(i,j);
 				cout << "main¹® È½¼ö" << endl;
-				area++;
 			}
 
 		}
