@@ -8,7 +8,6 @@ using namespace std;
 int N, M;
 bool visited[101];
 vector <int> vec[101];
-vector <int> ret[101];
 
 typedef struct {
 
@@ -19,12 +18,18 @@ void BFS(int people) {
 
 	queue <relp> q;
 	q.push({people, 0});
-	visited[people] = false;
+	visited[people] = true;
 	
 	while (!q.empty()) {
 		int cur = q.front().x;
 		int ccnt = q.front().y;
 		q.pop();
+
+		if (cur == 2)
+		{
+			cout << "ccnt : " << ccnt << endl;
+
+		}
 
 		for (int i = 0; i < N; i++) {
 			int next = vec[people][i];
@@ -43,8 +48,6 @@ void BFS(int people) {
 
 int main() {
 
-	memset(visited, false, sizeof(visited));
-
 	cin >> N >> M;
 	relp r;
 
@@ -56,8 +59,12 @@ int main() {
 
 	}
 
-	for(int i =0; i<N; i++)
+	
+	for (int i = 0; i < N; i++) {
+		memset(visited, false, sizeof(visited));
 		BFS(i);
+	}
+	
 
 	return 0;
 }
