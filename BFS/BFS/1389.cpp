@@ -31,8 +31,8 @@ void BFS(int people) {
 
 		}
 
-		for (int i = 0; i < N; i++) {
-			int next = vec[people][i];
+		for (int i = 0; i < vec[cur].size(); i++) {
+			int next = vec[cur][i];
 
 			if (!visited[next])
 			{
@@ -59,7 +59,6 @@ int main() {
 
 	}
 
-	
 	for (int i = 0; i < N; i++) {
 		memset(visited, false, sizeof(visited));
 		BFS(i);
