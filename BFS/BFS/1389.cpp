@@ -50,7 +50,8 @@ int main() {
 
 	cin >> N >> M;
 	relp r;
-	int sum[101] = {0,}, BOJ;
+	int sum[101] = { 0, };
+	int temp = 1;
 
 	for (int i = 0; i < M; i++) {
 
@@ -67,14 +68,11 @@ int main() {
 		}
 	}
 
-	for (int i = 1; i <= N; i++)
+	for (int i = 2; i <= N; i++)
 	{
-		if (sum[i] != 0) {
-			if (sum[i - 1] > sum[i])
-				BOJ = i;
-		}
+		if (sum[temp] > sum[i]) temp = i;
 	}
 
-	cout << BOJ;
+	cout << temp;
 	return 0;
 }
