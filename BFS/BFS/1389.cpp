@@ -15,12 +15,35 @@ typedef struct {
 	int x, y;
 }relp; // relationship
 
-void BFS() {
+void BFS(int people) {
 
+	queue <relp> q;
+	q.push({people, 0});
+	visited[people] = false;
 	
+	while (!q.empty()) {
+		int cur = q.front().x;
+		int ccnt = q.front().y;
+		q.pop();
+
+		for (int i = 0; i < N; i++) {
+			int next = vec[people][i];
+
+			if (!visited[next])
+			{
+				q.push({ next, ccnt + 1 });
+				visited[next] = true;
+			}
+
+		}
+
+	}
+
 }
 
 int main() {
+
+	memset(visited, false, sizeof(visited));
 
 	cin >> N >> M;
 	relp r;
@@ -33,8 +56,8 @@ int main() {
 
 	}
 
-	BFS();
-
+	for(int i =0; i<N; i++)
+		BFS(i);
 
 	return 0;
 }
