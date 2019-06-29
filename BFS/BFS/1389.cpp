@@ -8,13 +8,14 @@ using namespace std;
 int N, M;
 bool visited[101];
 vector <int> vec[101];
+vector <int> ret[101];
 
 typedef struct {
 
 	int x, y;
 }relp; // relationship
 
-void BFS(int people) {
+int BFS(int people, int goal) {
 
 	queue <relp> q;
 	q.push({people, 0});
@@ -25,10 +26,9 @@ void BFS(int people) {
 		int ccnt = q.front().y;
 		q.pop();
 
-		if (cur == 2)
+		if (cur == goal)
 		{
-			cout << "ccnt : " << ccnt << endl;
-
+			return ccnt;
 		}
 
 		for (int i = 0; i < vec[cur].size(); i++) {
@@ -50,6 +50,7 @@ int main() {
 
 	cin >> N >> M;
 	relp r;
+	int sum[101] = {0,}, BOJ;
 
 	for (int i = 0; i < M; i++) {
 
@@ -59,11 +60,21 @@ int main() {
 
 	}
 
-	for (int i = 0; i < N; i++) {
-		memset(visited, false, sizeof(visited));
-		BFS(i);
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			memset(visited, false, sizeof(visited));
+			sum[i] += BFS(i,j);
+		}
 	}
-	
 
+	for (int i = 1; i <= N; i++)
+	{
+		if (sum[i] != 0) {
+			if (sum[i - 1] > sum[i])
+				BOJ = i;
+		}
+	}
+
+	cout << BOJ;
 	return 0;
 }
