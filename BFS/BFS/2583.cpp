@@ -17,14 +17,8 @@ typedef struct {
 	int x, y;
 }rect;
 
-typedef struct {
-
-	int x, y, cnt;
-}pos;
-
 int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
-
 
 void print() {
 	cout << endl;
@@ -33,10 +27,13 @@ void print() {
 
 		for (int j = 0; j < N; j++) {
 
+			cout << visited[i][j];
+			/*
 			if (visited[i][j])
 				cout << "1";
 			else
-				cout << "0";
+				cout << "0";*/
+			
 		}
 		cout << endl;
 	}
@@ -44,25 +41,23 @@ void print() {
 
 bool isBoundary(int x, int y) {
 
-	if (x<0 || y<0 || x>M || y>N) return false;
+	if (x<0 || y<0 || x>M-1 || y>N-1) return false;
 	return true;
 
 }
 
 void BFS(int i, int j) {
-	cout << "BFS È½¼ö" << endl;
-	queue <pos> q;
+	queue <pair<int,int>> q;
 
-	q.push({ i,j,0 });
+	q.push({ i,j });
 	visited[i][j] = true;
 	cout << i<<","<< j ;
 	int ccnt;
 
 	while (!q.empty()) {
 
-		int curX = q.front().x;
-		int curY = q.front().y;
-		ccnt = q.front().cnt;
+		int curX = q.front().first;
+		int curY = q.front().second;
 		q.pop();
 
 		for (int i = 0; i < 4; i++) {
@@ -70,8 +65,9 @@ void BFS(int i, int j) {
 			int nextY = curY + dy[i];
 
 			if (isBoundary(nextX, nextY) && visited[nextX][nextY] == false && map[nextX][nextY] ==0) {
-				q.push({ nextX, nextY, ccnt+1 });
+				q.push({ nextX, nextY});
 				visited[nextX][nextY] = true;
+				ccnt++;
 			//	print();
 			}
 
@@ -83,8 +79,8 @@ void BFS(int i, int j) {
 
 int main() {
 
-	memset(map, 0, sizeof(map));
-	memset(visited, false, sizeof(visited));
+//	memset(map, 0, sizeof(map));
+//	memset(visited, false, sizeof(visited));
 	cin >> M >> N >> K;
 	
 	rect left, right;
@@ -112,11 +108,13 @@ int main() {
 			if (map[i][j] == 0 && visited[i][j] == false) {
 
 				BFS(i,j);
-				cout << "main¹® È½¼ö" << endl;
+				//print();
+				//cout << "main¹® È½¼ö" << endl;
 			}
 
 		}
 	}
+	//print();
 
 	sort(ret.begin(), ret.end());
 	
