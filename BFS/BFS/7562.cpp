@@ -29,7 +29,7 @@ typedef struct {
 
 bool isBoundary(int x, int y) {
 
-	if (x<0 || y<0 || x>N || y>N) return false;
+	if (x<0 || y<0 || x>N-1 || y>N-1) return false;
 	return true;
 
 }

@@ -25,6 +25,7 @@ void BFS(int x, int y, int basePoint) {
 	queue<pair<int, int>> q;
 	q.push({ x,y });
 	visited[x][y] = true;
+//	cout << basePoint << endl;
 
 	while (!q.empty()) {
 
@@ -66,23 +67,24 @@ int main() {
 		
 	}
 
-	cout << "max number : " << max_num;
+	//cout << "max number : " << max_num;
 
 	for (int i = 1; i <= max_num; i++) {
 		memset(visited, false, sizeof(visited));
+		safeZone = 0;
 		for (int j = 0; j < N; j++) {
 
-			for (int k = 0; j < N; k++) {
+			for (int k = 0; k < N; k++) {
 
-				if (!visited[j][k] && map[j][k] > max_num) {
+				if (!visited[j][k] && map[j][k] > i) {
 				//	visited[j][k] = true;
-					BFS(j, k, max_num);
+					BFS(j, k, i);
 					safeZone++;
 				}
 				
 			}
 		}
-		cout << "safezone : " << safeZone << endl;
+	//	cout << "safezone : " << safeZone << endl;
 		if (safeZone > maxSafe) maxSafe = safeZone;
 	}
 
