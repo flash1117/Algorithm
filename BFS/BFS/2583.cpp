@@ -72,7 +72,7 @@ void BFS(int i, int j) {
 			if (isBoundary(nextX, nextY) && visited[nextX][nextY] == false && map[nextX][nextY] ==0) {
 				q.push({ nextX, nextY, ccnt+1 });
 				visited[nextX][nextY] = true;
-				print();
+			//	print();
 			}
 
 		}
