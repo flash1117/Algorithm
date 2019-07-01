@@ -5,7 +5,8 @@
 
 using namespace std;
 
-int N, M;
+int N, M, safeCnt=0, virusCnt=0;
+int x1 = 0, x2 = 0, p1 = 0, p2 = 0;
 int map[8][8];
 int copymap[8][8];
 bool visited[8][8];
@@ -14,24 +15,30 @@ int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
 
 vector <pair<int, int>> vec;
+vector <int> ret;
 
 void print() {
 
-
 	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
+		for (int j = 0; j < M; j++) {
 
-			cout << map[i][j] << " ";
+			cout << visited[i][j] << " ";
 		}
 		cout << endl;
 	}
+}
+
+bool isBoundary(int x, int y) {
+
+	if (x<0 || y<0 || x>N - 1 || y>M- 1) return false;
+	return true;
 }
 
 void copyMap() {
 
 	for (int i = 0; i < N; i++) {
 
-		for (int j = 0; j < N; j++) {
+		for (int j = 0; j < M; j++) {
 
 			copymap[i][j] = map[i][j];
 
@@ -40,78 +47,103 @@ void copyMap() {
 }
 
 void makeWall(int cnt) {
-	int x1, x2, y1, y2;
-	if (cnt == 3) {
-		copymap[x1][y1] = 0;
-		copymap[x2][y2] = 0;
-	}
+	if (cnt == 3);
 	else {
 
 		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
+			for (int j = 0; j < M; j++) {
 
 				if (map[i][j] == 0) {
 					copymap[i][j] = 1;
 
 					if (cnt == 1) {
 						x1 = i;
-						y1 = j;
+						p1 = j;
 					}
 					else if (cnt == 2) {
 						x2 = i;
-						y2 = j;
+						p2 = j;
 					}
 
 					makeWall(cnt + 1);
 				}
 
 			}
-
 		}
 	}
 }
 
 void BFS() {
-
+	
 	queue <pair<int, int>> q;
+	int Count = 0;
 
+	for (int i = 0; i < vec.size(); i++) {
+		q.push({ vec[i].first, vec[i].second });
+		cout << "vec : " << vec[i].first << "vec 2: "<<vec[i].second << endl;
+		visited[vec[i].first][vec[i].second] = true;
+	}
+		
+	while (!q.empty()) {
+		int curX = q.front().first;
+		int curY = q.front().second;
 
+		q.pop();
+		for (int i = 0; i < 4; i++) {
+			int nextX = curX + dx[i];
+			int nextY = curY + dy[i];
+
+			if (isBoundary(nextX, nextY) && copymap[nextX][nextY] == 0 && !visited[nextX][nextY]) {
+				q.push({ nextX, nextY });
+				visited[nextX][nextY] = true;
+				Count++;
+			}
+
+		}
+	}
+	ret.push_back(Count);
 }
 
 int main() {
 	int wall = 3;
 
 	memset(map, 0, sizeof(map));
-	memset(copymap, 0, sizeof(copymap));
-	memset(visited, false, sizeof(visited));
 
 	cin >> N >> M;
 	for (int i = 0; i < N; i++) {
 
 		for (int j = 0; j < M; j++) {
 			cin >> map[i][j];
-			if (map[i][j] == 2)
+			if (map[i][j] == 0)
+				safeCnt++;
+			if (map[i][j] == 2) {
 				vec.push_back({ i,j });
+				virusCnt++;
+			}
+				
 		}
 			
 	}
-
-	copyMap();
-
 	for (int i = 0; i < N; i++) {
 
-		for (int j = 0; j < N; j++) {
+		for (int j = 0; j < M; j++) {
 
 			if (map[i][j] == 0) {
+				copyMap();
+				memset(visited, false, sizeof(visited));
+
 				copymap[i][j] = 1;
 				makeWall(1);
 				BFS();
+				copymap[x1][p1] = 0;
+				copymap[x2][p2] = 0;
 				copymap[i][j] = 0;
 			}
 		}
 	}
 
-
-
+	for (int i = 0; i < ret.size(); i++) {
+		cout << ret[i] << " ";
+	}
 	return 0;
 }
