@@ -22,10 +22,11 @@ void print() {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++) {
 
-			cout << visited[i][j] << " ";
+			cout << copymap[i][j] << " ";
 		}
 		cout << endl;
 	}
+	cout << endl;
 }
 
 bool isBoundary(int x, int y) {
@@ -47,22 +48,29 @@ void copyMap() {
 }
 
 void makeWall(int cnt) {
-	if (cnt == 3);
+	if (cnt == 3) {
+		print();
+		copymap[x1][p1] = 0;
+		copymap[x2][p2] = 0;
+	}
 	else {
 
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < M; j++) {
 
-				if (map[i][j] == 0) {
+				if (copymap[i][j] == 0) {
 					copymap[i][j] = 1;
 
 					if (cnt == 1) {
 						x1 = i;
 						p1 = j;
+
+						cout << "x1,y1 : " << x1 << p1 << endl;
 					}
 					else if (cnt == 2) {
 						x2 = i;
 						p2 = j;
+						cout << "x2, y2 : " << x2 << p2 << endl;
 					}
 
 					makeWall(cnt + 1);
@@ -80,7 +88,7 @@ void BFS() {
 
 	for (int i = 0; i < vec.size(); i++) {
 		q.push({ vec[i].first, vec[i].second });
-		cout << "vec : " << vec[i].first << "vec 2: "<<vec[i].second << endl;
+//		cout << "vec : " << vec[i].first << "vec 2: "<<vec[i].second << endl;
 		visited[vec[i].first][vec[i].second] = true;
 	}
 		
@@ -135,8 +143,7 @@ int main() {
 				copymap[i][j] = 1;
 				makeWall(1);
 				BFS();
-				copymap[x1][p1] = 0;
-				copymap[x2][p2] = 0;
+				
 				copymap[i][j] = 0;
 			}
 		}
