@@ -6,7 +6,7 @@ using namespace std;
 
 int N;
 int map[101][101];
-bool visited[101];
+bool visited[101][101];
 
 bool isBoundary(int x, int y) {
 
@@ -14,19 +14,12 @@ bool isBoundary(int x, int y) {
 	return true;
 }
 
-
-void DFS(int relp, int pt) {
-
+void DFS(int start,int now) {
+	if (visited[start][now]) return;
+	visited[start][now] = 1;
 	for (int i = 0; i < N; i++) {
-
-		if (map[pt][i] == 1 && !visited[pt]) {
-			visited[pt] = true;
-			map[relp][pt] = 1;
-			DFS(relp, i);
-
-		}
+		if (map[now][i]) DFS(start, i);
 	}
-
 }
 
 int main() {
@@ -42,8 +35,16 @@ int main() {
 			cin >> map[i][j];
 		}
 	}
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			if (map[i][j]) DFS(i, j);
 
-
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			cout << visited[i][j] << " ";
+		}
+		cout << endl;
+	}
 
 
 	return 0;
