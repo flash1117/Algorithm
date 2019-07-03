@@ -33,23 +33,22 @@ void BFS(int pt) {
 
 	queue <int> q;
 	q.push(pt);
-
-	cout << endl << pt << " ";
+	visited[pt] = true;
 
 	while (!q.empty()) {
 
 		int cur = q.front();
 		q.pop();
 
-		for (int i = 0; i < vec[pt].size(); i++) {
-			int next = vec[pt][i];
+		cout << cur << " ";
+
+		for (int i = 0; i < vec[cur].size(); i++) {
+			int next = vec[cur][i];
 			if (!visited[next]) {
-				cout << next << " ";
 				q.push(next);
 				visited[next] = true;
-				
 			}
-		
+			
 		}
 
 	}
@@ -74,6 +73,7 @@ int main() {
 	}
 
 	DFS(V);
+	cout << endl;
 	memset(visited, false, sizeof(visited));
 	BFS(V);
 
