@@ -22,11 +22,8 @@ bool isBoundary(int x, int y) {
 
 void DFS(int x, int y, int cnt) {
 
-	if (visited[x][y]) {
-		vec.push_back(cnt);
-		cnt = 0;
+	if (visited[x][y]) 
 		return;
-	}
 
 	visited[x][y] = true;
 	
@@ -36,18 +33,19 @@ void DFS(int x, int y, int cnt) {
 		int nextY = y + dy[i];
 
 		if (!visited[nextX][nextY] && isBoundary(nextX, nextY) && map[nextX][nextY] == 1) {
-			cout << nextX << " , " << nextY << endl;
+		//	cout << nextX << " , " << nextY << endl;
 			DFS(nextX, nextY, cnt+1);
 		}
 	}
 
+	vec.push_back(cnt);
 }
 
 int main() {
 
 	memset(visited, false, sizeof(visited));
 	string temp;
-	
+	int area = 0;
 	cin >> N;
 
 	for (int i = 0; i < N; i++) {
@@ -58,11 +56,24 @@ int main() {
 		}
 	}
 
-	DFS(0, 0, 0);
+	for (int i = 0; i < N; i++) {
 
+		for (int j = 0; j < N; j++) {
+
+			if (map[i][j] == 1 && visited[i][j] == false) {
+				DFS(i, j, 0);
+				area++;
+			}
+				
+		}
+	}
+
+	cout << area << endl;
 
 	for (int i = 0; i < vec.size(); i++)
-		cout << vec[i] << " ";
+		cout << vec[i] << endl;
+
+	
 
 	return 0;
 }
