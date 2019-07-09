@@ -18,24 +18,36 @@ bool isBoundary(int x, int y) {
 	return true;
 }
 
-void DFS(int x, int y) {
-
+void melt(int x,int y) { 
+	int cnt = 0;
 	visited[x][y] = true;
-
 	for (int i = 0; i < 4; i++) {
 		int nearX = x + dx[i];
 		int nearY = y + dy[i];
-
-		if (map[nearX][nearY] == 0 && map[x][y] > 0 && !visited[nearX][nearY])
-			map[x][y] -= 1;
+		if (isBoundary(nearX, nearY) && !visited[nearX][nearY] && !map[nearX][nearY]) cnt++;
 	}
+	map[x][y] -= cnt;
+	if (map[x][y] < 0) map[x][y] = 0;
+}
 
+void yearLasting() {
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (map[i][j]) melt(i, j);
+		}
+	}
+}
+
+void DFS(int x, int y) {
+	if (!isBoundary(x, y) || visited[x][y] || map[x][y] == 0) return;
+
+	visited[x][y] = true;
+		
 	for (int i = 0; i < 4; i++) {
 		int nextX = x + dx[i];
 		int nextY = y + dy[i];
 
-		if (isBoundary(nextX, nextY) && !visited[nextX][nextY] && map[nextX][nextY] > 0)
-			DFS(nextX, nextY);
+		DFS(nextX, nextY);
 	}
 }
 
@@ -45,7 +57,7 @@ void print() {
 
 		for (int j = 0; j < M; j++) {
 
-			cout << map[i][j] << " ";
+			cout << visited[i][j] << " ";
 		}
 		cout << endl;
 	}
@@ -70,24 +82,29 @@ int main() {
 		area = 0;
 		memset(visited, false, sizeof(visited));
 
-		cnt++;
 		for (int i = 0; i < N; i++) {
 
 			for (int j = 0; j < M; j++) {
 
 				if (map[i][j] > 0 && !visited[i][j])
-					{
-						DFS(i, j);
-						area++;
-						if (area > 1) {
-							cout << cnt-1;
-							return 0;
-						}
-					}
+				{
+					DFS(i, j);
+					area++;
+				}
 			}
 		}
+		if (area > 1) {
+			cout << cnt;
+			break;
+		}
+		else if (area == 0) {
+			cout << 0;
+			break;
+		}
+		memset(visited, false, sizeof(visited));
+		yearLasting();
+		cnt++;
 	}
-
 	
 	return 0;
 }

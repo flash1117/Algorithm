@@ -1,10 +1,11 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
-int N;
+int N, cnt , max_cnt=0;
 int map[26][26];
 bool visited[26][26];
 
@@ -20,25 +21,19 @@ bool isBoundary(int x, int y) {
 
 }
 
-void DFS(int x, int y, int cnt) {
-
-	if (visited[x][y]) 
-		return;
+int DFS(int x, int y) {
+	if (!isBoundary(x,y)||visited[x][y]||!map[x][y]) return 0;
 
 	visited[x][y] = true;
-	
-	for (int i = 0; i < 4; i++)
-	{
+	int cnt = 1;
+
+	for (int i = 0; i < 4; i++) {
+
 		int nextX = x + dx[i];
 		int nextY = y + dy[i];
-
-		if (!visited[nextX][nextY] && isBoundary(nextX, nextY) && map[nextX][nextY] == 1) {
-		//	cout << nextX << " , " << nextY << endl;
-			DFS(nextX, nextY, cnt+1);
-		}
+		cnt += DFS(nextX, nextY);
 	}
-
-	vec.push_back(cnt);
+	return cnt;
 }
 
 int main() {
@@ -55,25 +50,21 @@ int main() {
 			map[i][j] = temp[j] - '0';
 		}
 	}
-
+	
 	for (int i = 0; i < N; i++) {
-
 		for (int j = 0; j < N; j++) {
 
-			if (map[i][j] == 1 && visited[i][j] == false) {
-				DFS(i, j, 0);
+			if (map[i][j] == 1 && !visited[i][j]) {
 				area++;
+				vec.push_back(DFS(i, j));
 			}
-				
 		}
 	}
-
+	
 	cout << area << endl;
-
+	sort(vec.begin(), vec.end());
 	for (int i = 0; i < vec.size(); i++)
 		cout << vec[i] << endl;
-
-	
 
 	return 0;
 }

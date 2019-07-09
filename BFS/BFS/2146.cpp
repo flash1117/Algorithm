@@ -41,25 +41,14 @@ void BFS(int x, int y) {
 			int nextX = curX + dx[i];
 			int nextY = curY + dy[i];
 
-			if(!visited[nextX][nextY])
-
-
 			if (map[nextX][nextY] == 0 && isBoundary(nextX, nextY))
 			{
 				q.push({ nextX, nextY, ccnt+1 });
 				
 			}
-
 		}
-
 	}
 }
-
-void makeBridge() {
-
-
-}
-
 
 int main() {
 
@@ -83,12 +72,9 @@ int main() {
 			
 			if (map[i][j] == 1 && !visited[i][j]) {
 				BFS(i, j);
-			}
-				
-
+			}			
 		}
 	}
-
 
 	return 0;
 }
