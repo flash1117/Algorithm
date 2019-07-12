@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include <algorithm>
 
 using namespace std;
 
@@ -74,6 +75,8 @@ int main() {
 	}
 	
 	cout << endl << ret.size() << endl;
+
+	sort(ret.begin(), ret.end());
 
 	for (int i = 0; i < ret.size(); i++)
 		cout << ret[i] << endl;
