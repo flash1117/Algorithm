@@ -21,7 +21,7 @@ void DFS(int x)
 		}
 		return;
 	}
-	if (x == vec[x - 1] && !visited[x]) {
+	if (x == vec[x - 1] && !visited[x] && x== start) {
 		ret.push_back(x);
 		return;
 	}
