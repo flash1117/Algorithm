@@ -2,34 +2,32 @@
 #include <cstring>
 #include <queue>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
 char map[51][51];
 bool visited[51][51];
-int R, C;
-int start_x, start_y;
-int water_x, water_y;
-int dst_x, dst_y;
+int R, C, ret=0;
 
 int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
 
-vector <int> ret;
+typedef struct {
+
+	int x, y;
+}pos;
+
 typedef struct {
 	int x, y, cnt;
 
-}pos;
+}dir;
 
-bool isBoundary(int x, int y) {
-
-	if (x< 0 || y<0 || x>R - 1 || y>C - 1) return false;
-	return true;
-}
+pos src, dst;
+vector <pair<int, int>> water;
+queue <dir> Hedgehog;
 
 void print() {
-
+	cout << endl;
 	for (int i = 0; i < R; i++) {
 
 		for (int j = 0; j < C; j++) {
@@ -38,91 +36,125 @@ void print() {
 		}
 		cout << endl;
 	}
+
 }
 
-void BFS() {
+bool isBoundary(int x, int y) {
 
-	queue <pos> q;
-	queue <pair<int, int>> water;
-	q.push({ start_x, start_y ,0});
-	visited[start_x][start_y] = true;
+	if (x<0 || y<0 || x>R - 1 || y>C - 1) return false;
+	return true;
+}
 
-	water.push({ water_x, water_y });
+void posInit(int x, int y) {
 
-	while (!q.empty()) {
+	if (map[x][y] == 'D') {
+		dst.x = x;
+		dst.y = y;
+	}
 
-		int curX = q.front().x;
-		int curY = q.front().y;
-		int ccnt = q.front().cnt;
+	else if (map[x][y] == 'S') {
+		src.x = x;
+		src.y = y;
 
-		q.pop();
+	}
 
-		int cwaterX = water.front().first;
-		int cwaterY = water.front().second;
+	else if (map[x][y] == '*') 
+		water.push_back({ x, y });
 
-		water.pop();
-		if (curX == dst_x && curY == dst_y)
-			ret.push_back(ccnt);
+}
+
+void moveHedgehog() {
+	if (Hedgehog.empty()) {
+		cout << "KAKTUS";
+		return;
+	}
+	else {
+
+		int curX = Hedgehog.front().x;
+		int curY = Hedgehog.front().y;
+		int ccnt = Hedgehog.front().cnt;
+		Hedgehog.pop();
+		visited[curX][curY] = true;
+
+		if (curX == dst.x && curY == dst.y) {
+			ret = ccnt;
+			return;
+		}
 
 		for (int i = 0; i < 4; i++) {
 			int nextX = curX + dx[i];
 			int nextY = curY + dy[i];
+			bool isWater = false;
 
-			int nwaterX = cwaterX + dx[i];
-			int nwaterY = cwaterY + dy[i];
-			if (isBoundary(nwaterX, nwaterY) && map[nwaterX][nwaterY] == '.') {
-				water.push({ nwaterX, nwaterY });
-				map[nwaterX][nwaterY] = '*';
+			if ((map[nextX][nextY] == '.' || map[nextX][nextY] == 'D')&& isBoundary(nextX, nextY) && !visited[nextX][nextY])
+			{
+				for (int j = 0; j < 4; j++) {
+					int nnextX = nextX + dx[i];
+					int nnextY = nextY + dy[i];
+
+					if (map[nnextX][nnextY] == '*')
+						isWater = true;
+				}
+
+				if (!isWater) {
+					visited[nextX][nextY] = true;
+					Hedgehog.push({ nextX, nextY, ccnt + 1 });
+				}
 			}
+		}
 
-			if (isBoundary(nextX, nextY) && !visited[nextX][nextY]
-				&& (map[nextX][nextY] == '.' || map[nextX][nextY] == 'D')) {
-				visited[nextX][nextY] = true;
-				q.push({ nextX, nextY, ccnt + 1 });
-				map[curX][curY] = '.';
-				map[nextX][nextY] = 'S';
+	}
+}
+
+void waterSpread() {
+
+	queue <pos> q;
+	for (int i = 0; i < water.size(); i++) 
+		q.push({ water[i].first, water[i].second });
+	
+	while (!q.empty()) {
+
+		for (int i = 0; i < water.size(); i++) {
+			if (q.empty()) break;
+
+			int curX = q.front().x;
+			int curY = q.front().y;
+
+			q.pop();
+			for (int i = 0; i < 4; i++) {
+				int nextX = curX + dx[i];
+				int nextY = curY + dy[i];
+
+				if (map[nextX][nextY] == '.' && isBoundary(nextX, nextY)) {
+					map[nextX][nextY] = '*';
+					q.push({ nextX, nextY });
+				}
 			}
 		}
 		print();
+		moveHedgehog();
+		if (ret != 0)
+			break;
 	}
 }
+
 
 int main() {
 
 	memset(visited, false, sizeof(visited));
-	memset(map, '0', sizeof(map));
-
-	string input;
 
 	cin >> R >> C;
-
 	for (int i = 0; i < R; i++) {
-
-		cin >> input;
 		for (int j = 0; j < C; j++) {
-			map[i][j] = input[j];
-			if (map[i][j] == 'S')
-			{
-				start_x = i; start_y = j;
-			}
-			else if (map[i][j] == '*') {
-				water_x = i; water_y = j;
-			}
-			else if (map[i][j] == 'D') {
-				dst_x = i; dst_y = j;
-			}
+			cin >> map[i][j];
+			posInit(i, j);
 		}
-	}
 
-	BFS();
-
-	if (!ret.empty())
-	{
-		sort(ret.begin(), ret.end());
-		cout << ret[0];
 	}
-	else
-		cout << "KAKTUS";
-		
+	Hedgehog.push({ src.x, src.y , 0});
+	waterSpread();
+
+	if (ret != 0)
+		cout << ret;
 	return 0;
 }
