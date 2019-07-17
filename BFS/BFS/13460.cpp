@@ -12,7 +12,7 @@ int N, M;
 int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
 
-vector <pair<int, int>> Red, Blue;
+vector <pair<int, int>> Red, Blue, dst;
 
 typedef struct {
 
@@ -56,13 +56,22 @@ int BFS() {
 
 		R.pop();
 		B.pop();
+		
+		if (rcurX == dst.front().first && rcurY == dst.front().second)
+			return ccnt;
+		if (ccnt > 10)
+			return -1;
 
 		for (int i = 0; i < 4; i++) {
 
 			int rnextX = rcurX + dx[i];
 			int rnextY = rcurY + dy[i];
 
+			if (isBoundary(rnextX, rnextY)
+				&& (map[rnextX][rnextY] == '.' || map[rnextX][rnextY] == 'O')) {
 
+
+			}
 		}
 
 
@@ -86,6 +95,8 @@ int main() {
 				Red.push_back(make_pair(i, j));
 			else if (map[i][j] == 'B')
 				Blue.push_back(make_pair(i, j));
+			else if (map[i][j] == 'O')
+				dst.push_back(make_pair(i, j));
 		}
 	}
 
