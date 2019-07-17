@@ -1,98 +1,106 @@
 #include <iostream>
 #include <cstring>
-#include <queue>
 #include <vector>
+#include <queue>
 
 using namespace std;
- 
+
 int N, M;
 int map[1001][1001];
 bool visited[1001][1001];
-vector <int> vec;
+vector<int> ret;
 
 int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
 
 typedef struct {
 
-	int x, y, cnt;
+	int x, y, breakable, cnt;
 }pos;
+
+void print() {
+
+	cout << endl;
+	for (int i = 0; i < N; i++) {
+
+		for (int j = 0; j < M; j++) {
+			cout << visited[i][j] << " ";
+
+		}
+		cout << endl;
+	}
+}
 
 bool isBoundary(int x, int y) {
 
 	if (x<0 || y<0 || x>N - 1 || y>M - 1) return false;
 	return true;
-
 }
 
 void BFS() {
 
 	queue <pos> q;
-	q.push({ 0,0,1 });
+	q.push({ 0,0,0,1 });
 	visited[0][0] = true;
 
 	while (!q.empty()) {
 
 		int curX = q.front().x;
 		int curY = q.front().y;
+		int breakWall = q.front().breakable;
 		int ccnt = q.front().cnt;
-		q.pop();
 
-		if (curX == N - 1 && curY == M - 1) {
-			vec.push_back(ccnt);
-			break;
-		}
+		q.pop();
+		if (curX == N - 1 && curY == M - 1)
+			ret.push_back(ccnt);
 
 		for (int i = 0; i < 4; i++) {
+
 			int nextX = curX + dx[i];
 			int nextY = curY + dy[i];
-
 			if (isBoundary(nextX, nextY) && !visited[nextX][nextY] && map[nextX][nextY] == 0) {
-				q.push({ nextX, nextY, ccnt + 1 });
 				visited[nextX][nextY] = true;
+				q.push({ nextX, nextY, breakWall, ccnt + 1 });
 			}
-
+			else if (isBoundary(nextX, nextY) && !visited[nextX][nextY]
+				&& map[nextX][nextY] == 1 && breakWall == 0) {
+				visited[nextX][nextY] = true;
+				q.push({ nextX, nextY, breakWall + 1, ccnt + 1 });
+			}
+			// 동서남북으로 움직이는데 벽부수고 간게 visited 먼저 찍혀서 중복 적용안되는거 수정
 		}
-
 	}
-
 
 }
 
+
 int main() {
-	int min_d =2000;
+
 	string temp;
+	int minD = 10000;
+	memset(visited, false, sizeof(visited));
 	cin >> N >> M;
 
 	for (int i = 0; i < N; i++) {
 
 		cin >> temp;
 		for (int j = 0; j < M; j++) {
-			
+
 			map[i][j] = temp[j] - '0';
 		}
 	}
-
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < M; j++) {
-
-			if (map[i][j] == 1) {
-				memset(visited, false, sizeof(visited));
-				map[i][j] = 0;
-				BFS();
-				map[i][j] = 1;
-			}
-		}
-	}
-
-	if (vec.empty())
+	
+	BFS();
+	print();
+	if (ret.empty())
 		cout << "-1";
 	else {
-		for (int i = 0; i < vec.size(); i++)
-			if (min_d > vec[i]) min_d = vec[i];
 
-		cout << min_d;
+		for (int i = 0; i < ret.size(); i++)
+			if (minD > ret[i]) minD = ret[i];
+		cout << minD;
 	}
+
 	
 	return 0;
 }
