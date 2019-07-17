@@ -1,35 +1,33 @@
 #include <iostream>
-#include <cstring>
 #include <queue>
+#include <cstring>
 #include <vector>
 
 using namespace std;
 
+int R, C;
 char map[51][51];
 bool visited[51][51];
-int R, C, ret=0;
+vector <pair<int, int>> src, dst, w;
 
 int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
 
 typedef struct {
 
-	int x, y;
+	int x, y, cnt;
 }pos;
 
-typedef struct {
-	int x, y, cnt;
+bool isBoundary(int x, int y) {
 
-}dir;
-
-pos src, dst;
-vector <pair<int, int>> water;
-queue <dir> Hedgehog;
+	if (x<0 || y<0 || x>R - 1 || y>C - 1) return false;
+	return true;
+}
 
 void print() {
+
 	cout << endl;
 	for (int i = 0; i < R; i++) {
-
 		for (int j = 0; j < C; j++) {
 
 			cout << map[i][j] << " ";
@@ -39,122 +37,101 @@ void print() {
 
 }
 
-bool isBoundary(int x, int y) {
+int BFS() {
 
-	if (x<0 || y<0 || x>R - 1 || y>C - 1) return false;
-	return true;
-}
+	queue <pair<int, int>> water;
+	queue <pos> Hoghedge;
+	Hoghedge.push({ src[0].first, src[0].second, 0 });
+	visited[src[0].first][src[0].second] = true;
 
-void posInit(int x, int y) {
+	for (int i = 0; i < w.size(); i++) {
 
-	if (map[x][y] == 'D') {
-		dst.x = x;
-		dst.y = y;
+		water.push(w[i]);
 	}
+		
+	while (!Hoghedge.empty()) {
 
-	else if (map[x][y] == 'S') {
-		src.x = x;
-		src.y = y;
+		for (int i = 0; i < water.size(); i++) {
+			int wcurX = water.front().first;
+			int wcurY = water.front().second;
+			water.pop();
+			
+			for (int j = 0; j < 4; j++) {
+				int wnextX = wcurX + dx[j];
+				int wnextY = wcurY + dy[j];
 
-	}
-
-	else if (map[x][y] == '*') 
-		water.push_back({ x, y });
-
-}
-
-void moveHedgehog() {
-	if (Hedgehog.empty()) {
-		cout << "KAKTUS";
-		return;
-	}
-	else {
-
-		int curX = Hedgehog.front().x;
-		int curY = Hedgehog.front().y;
-		int ccnt = Hedgehog.front().cnt;
-		Hedgehog.pop();
-		visited[curX][curY] = true;
-
-		if (curX == dst.x && curY == dst.y) {
-			ret = ccnt;
-			return;
-		}
-
-		for (int i = 0; i < 4; i++) {
-			int nextX = curX + dx[i];
-			int nextY = curY + dy[i];
-			bool isWater = false;
-
-			if ((map[nextX][nextY] == '.' || map[nextX][nextY] == 'D')&& isBoundary(nextX, nextY) && !visited[nextX][nextY])
-			{
-				for (int j = 0; j < 4; j++) {
-					int nnextX = nextX + dx[i];
-					int nnextY = nextY + dy[i];
-
-					if (map[nnextX][nnextY] == '*')
-						isWater = true;
-				}
-
-				if (!isWater) {
-					visited[nextX][nextY] = true;
-					Hedgehog.push({ nextX, nextY, ccnt + 1 });
+				if (isBoundary(wnextX, wnextY) && map[wnextX][wnextY] == '.')
+				{
+					map[wnextX][wnextY] = '*';
+					water.push(make_pair(wnextX, wnextY));
 				}
 			}
 		}
 
-	}
-}
+	//	print();
+		for (int j = 0; j < Hoghedge.size(); j++) {
+			int curX = Hoghedge.front().x;
+			int curY = Hoghedge.front().y;
+			int ccnt = Hoghedge.front().cnt;
+			Hoghedge.pop();
 
-void waterSpread() {
+			if (curX == dst[0].first && curY == dst[0].second)
+				return ccnt;
 
-	queue <pos> q;
-	for (int i = 0; i < water.size(); i++) 
-		q.push({ water[i].first, water[i].second });
-	
-	while (!q.empty()) {
-
-		for (int i = 0; i < water.size(); i++) {
-			if (q.empty()) break;
-
-			int curX = q.front().x;
-			int curY = q.front().y;
-
-			q.pop();
 			for (int i = 0; i < 4; i++) {
 				int nextX = curX + dx[i];
 				int nextY = curY + dy[i];
 
-				if (map[nextX][nextY] == '.' && isBoundary(nextX, nextY)) {
-					map[nextX][nextY] = '*';
-					q.push({ nextX, nextY });
+				if (isBoundary(nextX, nextY) && !visited[nextX][nextY]
+					&& (map[nextX][nextY] == '.' || map[nextX][nextY] == 'D'))
+				{
+					visited[nextX][nextY] = true;
+					Hoghedge.push({ nextX, nextY, ccnt + 1 });
+
 				}
+
 			}
+
 		}
-		print();
-		moveHedgehog();
-		if (ret != 0)
-			break;
+
 	}
+
+		
+	return -1;
 }
 
 
 int main() {
 
+	int ret = 0;
 	memset(visited, false, sizeof(visited));
-
 	cin >> R >> C;
 	for (int i = 0; i < R; i++) {
+
 		for (int j = 0; j < C; j++) {
+
 			cin >> map[i][j];
-			posInit(i, j);
+			if (map[i][j] == 'S') {
+				src.push_back(make_pair(i, j));
+			}
+				
+			else if (map[i][j] == 'D') {
+				dst.push_back(make_pair(i, j));
+			}
+				
+			else if (map[i][j] == '*') {
+				w.push_back(make_pair(i, j));
+			}
+				
 		}
-
 	}
-	Hedgehog.push({ src.x, src.y , 0});
-	waterSpread();
 
-	if (ret != 0)
+	ret = BFS();
+	if (ret == -1)
+		cout << "KAKTUS";
+	else {
 		cout << ret;
+	}
+
 	return 0;
 }
