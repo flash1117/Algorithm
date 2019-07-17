@@ -62,12 +62,11 @@ void BFS() {
 				visited[nextX][nextY] = true;
 				q.push({ nextX, nextY, breakWall, ccnt + 1 });
 			}
-			else if (isBoundary(nextX, nextY) && !visited[nextX][nextY]
-				&& map[nextX][nextY] == 1 && breakWall == 0) {
-				visited[nextX][nextY] = true;
+			else if (isBoundary(nextX, nextY) && map[nextX][nextY] == 1 && breakWall == 0) {
+			//	visited[nextX][nextY] = true;
 				q.push({ nextX, nextY, breakWall + 1, ccnt + 1 });
 			}
-			// 동서남북으로 움직이는데 벽부수고 간게 visited 먼저 찍혀서 중복 적용안되는거 수정
+
 		}
 	}
 
@@ -91,7 +90,7 @@ int main() {
 	}
 	
 	BFS();
-	print();
+	//print();
 	if (ret.empty())
 		cout << "-1";
 	else {
