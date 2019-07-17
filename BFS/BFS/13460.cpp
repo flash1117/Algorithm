@@ -42,7 +42,8 @@ void print() {
 int BFS() {
 
 	queue <pos> R, B;
-	R.push({Red[0].first, Red[0].second, 0});
+	R.push({ Red[0].first, Red[0].second, 0 });
+	visited[Red[0].first][Red[0].second] = true;
 	B.push({ Blue[0].first, Blue[0].second, 0 });
 
 	while (!R.empty()) {
@@ -56,7 +57,7 @@ int BFS() {
 
 		R.pop();
 		B.pop();
-		
+
 		if (rcurX == dst.front().first && rcurY == dst.front().second)
 			return ccnt;
 		if (ccnt > 10)
@@ -66,25 +67,42 @@ int BFS() {
 
 			int rnextX = rcurX + dx[i];
 			int rnextY = rcurY + dy[i];
+			int bnextX = bcurX + dx[i];
+			int bnextY = bcurY + dy[i];
 
-			if (isBoundary(rnextX, rnextY)
-				&& (map[rnextX][rnextY] == '.' || map[rnextX][rnextY] == 'O')) {
+			if (isBoundary(rnextX, rnextY) && isBoundary(bnextX, bnextY)) {
+
+				if (map[rnextX][rnextY] != 'B' && !visited[rnextX][rnextY] && map[bnextX][bnextY] != 'O'
+					&& (map[rnextX][rnextY] == '.' || map[rnextX][rnextY] == 'O')) {
+
+					if (map[bnextX][bnextY] == '#')
+						B.push({ bcurX, bcurY , ccnt + 1 });
+					else
+						B.push({ bnextX, bnextY, ccnt + 1 });
+					visited[rnextX][rnextY] = true;
+					R.push({ rnextX, rnextY, ccnt + 1 });
+
+				}
+				else if (map[rnextX][rnextY] == '#' && map[bnextX][bnextY] != '#' && map[bnextX][bnextY] != 'O'
+					&& rnextX != bnextX && rnextY != bnextY) {
+
+					R.push({ rcurX, rcurY, ccnt + 1 });
+					B.push({ bnextX, bnextY, ccnt + 1 });
+
+				}
+
 
 
 			}
+
 		}
-
-
-
-
 	}
-
-
 }
 
 
 int main() {
 
+	memset(visited, false, sizeof(visited));
 	cin >> N >> M;
 	for (int i = 0; i < N; i++) {
 
@@ -100,6 +118,7 @@ int main() {
 		}
 	}
 
-	print();
+	int ret = BFS();
+	cout << ret;
 	return 0;
 }
