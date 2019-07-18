@@ -26,9 +26,18 @@ typedef struct {
 
 vector <tomato> vec;
 
-int BFS() {
+bool isBoundary(int x, int y, int z) {
 
+	if (x<0 || y<0 || z<0 || x>N - 1 || y>M - 1 || z>H - 1) return false;
+	return true;
+
+}
+
+int BFS() {
+	
+	int day = 0;
 	queue <pos> q;
+
 	for (int i = 0; i < vec.size(); i++) {
 		q.push({ vec[i].z, vec[i].x, vec[i].y , 0 });
 		visited[vec[i].z][vec[i].x][vec[i].y] = true;
@@ -42,12 +51,22 @@ int BFS() {
 		int ccnt = q.front().cnt;
 		q.pop();
 
-		for (int i = 0; i < 6; i++) {
+		if (ccnt > day) day = ccnt;
 
+		for (int i = 0; i < 6; i++) {
+			int nextH = curH + dz[i];
+			int nextX = curX + dx[i];
+			int nextY = curY + dy[i];
+
+			if (isBoundary(nextX, nextY, nextH) && map[nextH][nextX][nextY] == 0
+				&& !visited[nextH][nextX][nextY]) {
+
+				visited[nextH][nextX][nextY] = true;
+				map[nextH][nextX][nextY] = 1;
+				q.push({ nextH, nextX, nextY, ccnt + 1 });
+			}
 
 		}
-
-		
 
 	}
 
@@ -57,7 +76,7 @@ int BFS() {
 				if (!visited[i][j][k])
 					return -1;
 			
-	return 0;
+	return day;
 }
 
 int tomatoCheck() {
@@ -117,9 +136,13 @@ int main() {
 		cout << "0";
 	}
 	else {
-		BFS();
+		int ret = BFS();
+		if (ret == -1)
+			cout << "-1";
+		else
+			cout << ret;
 	}
 
-	print();
+//	print();
 	return 0;
 }
