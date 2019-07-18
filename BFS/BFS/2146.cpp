@@ -1,10 +1,12 @@
 #include <iostream>
 #include <cstring>
 #include <queue>
+#include <algorithm>
+#include <vector>
 
 using namespace std;
 
-int N, minLength = 101;
+int N, minD = 200;
 int map[101][101];
 bool visited[101][101];
 
@@ -66,37 +68,44 @@ void print() {
 
 }
 
-void BFS(int l_x, int l_y, int area) {
-
+void BFS(int area) {
 	queue <pos> q;
-	q.push({ l_x,l_y,0 });
-	visited[l_x][l_y] = true;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+
+			if (map[i][j] == area && !visited[i][j]) {
+				visited[i][j] = true;
+				q.push({ i,j,0 });
+			}
+		}
+	}
 
 	while (!q.empty()) {
+
 		int curX = q.front().x;
 		int curY = q.front().y;
 		int ccnt = q.front().cnt;
-
 		q.pop();
 
-		if (map[curX][curY] != area && map[curX][curY] > 0) {
-			if (minLength > ccnt) minLength = ccnt;
-		}
+		if (map[curX][curY] != 0 && map[curX][curY] != area)
+			if (minD > ccnt) minD = ccnt;
 
 		for (int i = 0; i < 4; i++) {
+
 			int nextX = curX + dx[i];
 			int nextY = curY + dy[i];
 
-			if (isBoundary(nextX, nextY) && map[nextX][nextY] != area && !visited[nextX][nextY])
-			{
-				q.push({ nextX, nextY, ccnt + 1 });
+			if (isBoundary(nextX, nextY) && !visited[nextX][nextY] && map[nextX][nextY] != area) {
+
 				visited[nextX][nextY] = true;
+				q.push({ nextX, nextY, ccnt + 1 });
 			}
 		}
 
 	}
-
 }
+
+
 int main() {
 
 	int area = 1;
@@ -123,23 +132,22 @@ int main() {
 		}
 	}
 
-	
-	
 	while (area--) {
+		if (area == 0) break;
+
 		memset(visited, false, sizeof(visited));
-
+		
 		for (int i = 0; i < N; i++) {
-
 			for (int j = 0; j < N; j++) {
-				if (map[i][j] == area)
-				{
-					BFS(i,j,area);
-				}
+				if (map[i][j] == area && !visited[i][j])
+					BFS(area);
 			}
 		}
+		
 	}
+	
+	cout << minD-1;
 
-	cout << minLength;
 	//print();
 	return 0;
 }
