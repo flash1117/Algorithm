@@ -7,7 +7,7 @@ using namespace std;
 
 int K, W, H;
 int map[201][201];
-bool visited[201][201];
+bool visited[201][201][32];
 
 int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
@@ -25,22 +25,10 @@ bool isBoundary(int x, int y) {
 	return true;
 }
 
-void print() {
-
-	cout << endl;
-	for (int i = 0; i < H; i++) {
-		for (int j = 0; j < W; j++) {
-
-			cout << map[i][j] << " ";
-		}
-		cout << endl;
-	}
-}
-
 int BFS() {
 	int minD = 401;
 	queue <pos> q;
-	visited[0][0] = true;
+	visited[0][0][0] = true;
 	q.push({ 0,0,0,0});
 
 	while (!q.empty()) {
@@ -51,47 +39,35 @@ int BFS() {
 		int hcnt = q.front().hcnt;
 
 		q.pop();
-		if (curX == H - 1 && curY == W - 1) {
+		if (curX == H - 1 && curY == W - 1) 
+			if(ccnt < minD) minD = ccnt; 
+		
+		if (hcnt < K) {
 
-			if (minD > ccnt) { 
-				minD = ccnt; 
-				if (hcnt > K) {
-					for (int i = 0; i < hcnt - K; i++)
-						minD += 2;
+			for (int i = 0; i < 8; i++) {
+				int nextX = curX + hdx[i];
+				int nextY = curY + hdy[i];
+
+				if (isBoundary(nextX, nextY) && map[nextX][nextY] != 1 && !visited[nextX][nextY][hcnt + 1])
+				{
+					visited[nextX][nextY][hcnt + 1] = true;
+					q.push({ nextX, nextY , ccnt + 1 ,hcnt + 1 });
 				}
 			}
 		}
-			
 
 		for (int i = 0; i < 4; i++) {
 
 			int nextX = curX + dx[i];
 			int nextY = curY + dy[i];
 
-			if (isBoundary(nextX, nextY) && map[nextX][nextY] != 1 && !visited[nextX][nextY]) {
+			if (isBoundary(nextX, nextY) && map[nextX][nextY] != 1 && !visited[nextX][nextY][hcnt]) {
 
-				visited[nextX][nextY] = true;
+				visited[nextX][nextY][hcnt] = true;
 				q.push({ nextX, nextY, ccnt + 1, hcnt });
 
 			}
-
 		}
-		if (K != 0) {
-			
-			for (int i = 0; i < 8; i++) {
-				int nextX = curX + hdx[i];
-				int nextY = curY + hdy[i];
-
-				if (isBoundary(nextX, nextY) && map[nextX][nextY] != 1 && !visited[nextX][nextY])
-				{
-					visited[nextX][nextY] = true;
-					q.push({ nextX, nextY , ccnt + 1 ,hcnt + 1 });
-				//	map[nextX][nextY] = 2;
-				}
-			}
-
-		}
-	//	print();
 	}
 
 	if (minD == 401)
@@ -111,7 +87,6 @@ int main() {
 		for (int j = 0; j < W; j++) 
 			cin >> map[i][j];
 		
-	
 	int ret = BFS();
 
 	cout << ret;
