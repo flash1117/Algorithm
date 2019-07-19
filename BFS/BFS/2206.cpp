@@ -7,8 +7,7 @@ using namespace std;
 
 int N, M;
 int map[1001][1001];
-bool visited[1001][1001];
-vector<int> ret;
+bool visited[1001][1001][2];
 
 int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
@@ -37,11 +36,11 @@ bool isBoundary(int x, int y) {
 	return true;
 }
 
-void BFS() {
+int BFS() {
 
 	queue <pos> q;
 	q.push({ 0,0,0,1 });
-	visited[0][0] = true;
+	visited[0][0][0] = true;
 
 	while (!q.empty()) {
 
@@ -52,24 +51,25 @@ void BFS() {
 
 		q.pop();
 		if (curX == N - 1 && curY == M - 1)
-			ret.push_back(ccnt);
+			return ccnt;
 
 		for (int i = 0; i < 4; i++) {
 
 			int nextX = curX + dx[i];
 			int nextY = curY + dy[i];
-			if (isBoundary(nextX, nextY) && !visited[nextX][nextY] && map[nextX][nextY] == 0) {
-				visited[nextX][nextY] = true;
+			if (isBoundary(nextX, nextY) && !visited[nextX][nextY][breakWall] && map[nextX][nextY] == 0) {
+				visited[nextX][nextY][breakWall] = true;
 				q.push({ nextX, nextY, breakWall, ccnt + 1 });
 			}
 			else if (isBoundary(nextX, nextY) && map[nextX][nextY] == 1 && breakWall == 0) {
-			//	visited[nextX][nextY] = true;
+				visited[nextX][nextY][breakWall+1] = true;
 				q.push({ nextX, nextY, breakWall + 1, ccnt + 1 });
 			}
 
 		}
 	}
 
+	return -1;
 }
 
 
@@ -89,17 +89,7 @@ int main() {
 		}
 	}
 	
-	BFS();
-	//print();
-	if (ret.empty())
-		cout << "-1";
-	else {
+	cout << BFS();
 
-		for (int i = 0; i < ret.size(); i++)
-			if (minD > ret[i]) minD = ret[i];
-		cout << minD;
-	}
-
-	
 	return 0;
 }
