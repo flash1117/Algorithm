@@ -10,12 +10,28 @@ int sx, sy;
 char map[1001][1001];
 bool visited[1001][1001];
 
-vector <pair<int, int>> vec[101];
+vector <pair<int, int>> vec;
+
+int dx[] = { 0,0,-1,1 };
+int dy[] = { -1,1,0,0 };
 
 typedef struct {
 
 	int x, y, cnt;
 }pos;
+
+void print() {
+	cout << endl;
+	for (int i = 0; i < h; i++) {
+
+		for (int j = 0; j < w; j++) {
+
+			cout << visited[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+}
 
 bool isBoundary(int x, int y) {
 
@@ -28,29 +44,58 @@ int BFS() {
 	queue <pos> q;
 	queue <pair<int, int>> fire;
 	q.push({ sx,sy,0 });
-	for (int i = 0; i < vec[tcnt].size(); i++) {
-		fire.push(make_pair(vec[tcnt][i].first, vec[tcnt][i].second));
+	visited[sx][sy] = true;
 
+	for (int i = 0; i < vec.size(); i++) {
+		fire.push(make_pair(vec[i].first, vec[i].second));
+		cout << vec[i].first << " , " << vec[i].second << endl;
 	}
-
+		
 	while (!q.empty()) {
-
+	
 		int curX = q.front().x;
 		int curY = q.front().y;
 		int ccnt = q.front().cnt;
 		
 		q.pop();
 		for (int i = 0; i < fire.size(); i++) {
+		//	cout << "fire : " << fire.size();
+			int fcurX = fire.front().first;
+			int fcurY = fire.front().second;
 
+			fire.pop();
+			for (int j = 0; j < 4; j++) {
+				int fnextX = fcurX + dx[j];
+				int fnextY = fcurY + dy[j];
+
+				if (isBoundary(fnextX, fnextY) && map[fnextX][fnextY] == '.') {
+					fire.push(make_pair(fnextX, fnextY));
+					map[fnextX][fnextY] = '*';
+
+				}
+									
+			}
 
 		}
 
+			for (int j = 0; j < 4; j++) {
+				int nextX = curX + dx[j];
+				int nextY = curY + dy[j];
 
+				if (!isBoundary(nextX, nextY) && map[nextX][nextY] == '0')
+					return ccnt;
 
+				if (isBoundary(nextX, nextY) && map[nextX][nextY] == '.' && !visited[nextX][nextY]) {
+					q.push({ nextX, nextY, ccnt + 1 });
+					visited[nextX][nextY] = true;
+				}
 
+			}
+		
+		//print();
 	}
 
-
+	return -1;
 }
 
 
@@ -62,6 +107,11 @@ int main() {
 	while (T--) {
 		memset(map, '0', sizeof(map));
 		memset(visited, false, sizeof(visited));
+		for (int i = 0; i < vec.size(); i++)
+			vec.pop_back();
+
+		cout << "vec size : " << vec.size() << endl;
+
 		cin >> w >> h;
 
 		for (int i = 0; i < h; i++) {
@@ -74,14 +124,18 @@ int main() {
 					sy = j;
 				}
 				else if (map[i][j] == '*') 
-					vec[i].push_back(make_pair(i, j));
+					vec.push_back(make_pair(i, j));
 
 			}
 		}
 
 		int ret = BFS();
-		tcnt++;
+
+		if (ret == -1)
+			cout << "IMPOSSIBLE" << endl;
+		else
+			cout << "return : "<<ret << endl;
 	}
 
-
+	return 0;
 }
