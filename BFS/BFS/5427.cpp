@@ -43,23 +43,17 @@ int BFS() {
 
 	queue <pos> q;
 	queue <pair<int, int>> fire;
-	q.push({ sx,sy,0 });
+	q.push({ sx,sy,1});
 	visited[sx][sy] = true;
 
 	for (int i = 0; i < vec.size(); i++) {
 		fire.push(make_pair(vec[i].first, vec[i].second));
-		cout << vec[i].first << " , " << vec[i].second << endl;
 	}
 		
 	while (!q.empty()) {
 	
-		int curX = q.front().x;
-		int curY = q.front().y;
-		int ccnt = q.front().cnt;
-		
-		q.pop();
-		for (int i = 0; i < fire.size(); i++) {
-		//	cout << "fire : " << fire.size();
+		int fireSize = fire.size();
+		for (int i = 0; i < fireSize; i++) {
 			int fcurX = fire.front().first;
 			int fcurY = fire.front().second;
 
@@ -77,22 +71,31 @@ int BFS() {
 			}
 
 		}
+	
+		int pSize = q.size();
+		
+		for (int i = 0; i < pSize; i++) {
+			int curX = q.front().x;
+			int curY = q.front().y;
+			int ccnt = q.front().cnt;
+			q.pop();
 
 			for (int j = 0; j < 4; j++) {
 				int nextX = curX + dx[j];
 				int nextY = curY + dy[j];
 
-				if (!isBoundary(nextX, nextY) && map[nextX][nextY] == '0')
+				if (!isBoundary(nextX, nextY))
 					return ccnt;
 
 				if (isBoundary(nextX, nextY) && map[nextX][nextY] == '.' && !visited[nextX][nextY]) {
 					q.push({ nextX, nextY, ccnt + 1 });
 					visited[nextX][nextY] = true;
 				}
-
 			}
-		
-		//print();
+
+		}
+
+	//	print();
 	}
 
 	return -1;
@@ -107,10 +110,6 @@ int main() {
 	while (T--) {
 		memset(map, '0', sizeof(map));
 		memset(visited, false, sizeof(visited));
-		for (int i = 0; i < vec.size(); i++)
-			vec.pop_back();
-
-		cout << "vec size : " << vec.size() << endl;
 
 		cin >> w >> h;
 
@@ -134,7 +133,8 @@ int main() {
 		if (ret == -1)
 			cout << "IMPOSSIBLE" << endl;
 		else
-			cout << "return : "<<ret << endl;
+			cout <<ret << endl;
+		vec.clear();
 	}
 
 	return 0;

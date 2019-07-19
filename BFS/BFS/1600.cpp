@@ -26,7 +26,7 @@ bool isBoundary(int x, int y) {
 }
 
 int BFS() {
-	int minD = 401;
+	int minD = 40001;
 	queue <pos> q;
 	visited[0][0][0] = true;
 	q.push({ 0,0,0,0});
@@ -39,8 +39,9 @@ int BFS() {
 		int hcnt = q.front().hcnt;
 
 		q.pop();
-		if (curX == H - 1 && curY == W - 1) 
-			if(ccnt < minD) minD = ccnt; 
+		if (curX == H - 1 && curY == W - 1)
+			if(ccnt < minD) minD = ccnt;
+			//return ccnt;
 		
 		if (hcnt < K) {
 
@@ -70,11 +71,11 @@ int BFS() {
 		}
 	}
 
-	if (minD == 401)
+	if (minD == 40001)
 		return -1;
 	else
 		return minD;
-
+//	return -1;
 }
 
 int main() {
@@ -87,9 +88,7 @@ int main() {
 		for (int j = 0; j < W; j++) 
 			cin >> map[i][j];
 		
-	int ret = BFS();
-
-	cout << ret;
+	cout << BFS();
 
 	return 0;
 }
