@@ -31,8 +31,7 @@ void BFS() {
 
 int main() {
 
-	string temp = "", temp2 = "";
-
+	string temp, temp2;
 	while (1) {
 		cin >> L >> R >> C;
 		memset(visited, false, sizeof(visited));
@@ -42,10 +41,10 @@ int main() {
 			for (int j = 0; j < R; i++) {
 				cin >> temp;
 				for (int k = 0; k < C; k++) {
-					map[j][k][i] = temp[k];
+					map[i][j][k] = temp[k];
 				}
 			}
-			cin >> temp2;
+			getchar();
 		}
 
 	//	print();

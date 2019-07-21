@@ -1,67 +1,58 @@
 #include <iostream>
 #include <vector>
-#include <cstring>
 
 using namespace std;
 
-int n, k, s, ret =0;
-vector <int> vec[401];
-vector <int> rvec[401];
-bool visited[401], r;
+vector<int> v[401];
+vector<int> rv[401];
+bool visited[401];
 
-void DFS(int h1, int dst) {
 
-	if (visited[h1]) return ;
-	visited[h1] = true;
-
-	if (h1 == dst)
-	{
-		
-		ret = -1;
-		return ;
+bool DFS(int h1, int h2,int c) {
+	if (visited[h2]) return 0;
+	if (h1 == h2) return 1;
+	cout << "도착점 : "<<h2 << " " << c << endl;
+	visited[h2] = 1;
+	bool a;
+	if (!c)
+	for (int i = 0; i < v[h2].size(); i++) {
+		a = DFS(h1, v[h2][i], c);
+		if (a == 1) return 1;
 	}
-	if (r == false) {
-
-		for (int i = 0; i < vec[h1].size(); i++) {
-
-			DFS(vec[h1][i], dst);
-		}
+	else 
+	for (int i = 0; i < rv[h2].size(); i++) {
+		a = DFS(h1, rv[h2][i], c);
+		if (a==1) return 1;
 	}
-	else if(r == true){ // 이 안으로 안들어온다 왜죠
-		for (int i = 0; i < rvec[h1].size(); i++) {
-			
-			DFS(rvec[h1][i], dst);
-		}
+	return 0;
+}
+
+void Init(int n) {
+	for (int i = 1; i <= n; i++) {
+		visited[i] = 0;
 	}
-	
 }
 
 int main() {
-
-	int h1, h2;
-	
+	int n, k,input1,input2,s;
 	cin >> n >> k;
-
 	for (int i = 0; i < k; i++) {
+		cin >> input1 >> input2;
+		v[input1].push_back(input2);
+		rv[input2].push_back(input1);
 
-		cin >> h1 >> h2;
-		vec[h1].push_back(h2);
-		rvec[h2].push_back(h1);
 	}
 	cin >> s;
 	for (int i = 0; i < s; i++) {
-		ret = 0;
-		r = false;
-		memset(visited, false, sizeof(visited));
-		cin >> h1 >> h2;
-		DFS(h1, h2);
-		if (ret != -1) {
-			r = true;
-			memset(visited, false, sizeof(visited));
-			DFS(h2, h1);
-			if (ret == -1) ret = ret * (-1);
+		cin >> input1 >> input2;
+
+		if (DFS(input1, input2,0)) cout << 1 << endl;
+		else {
+			Init(n);
+			cout << -DFS(input2, input1,1) << endl;
 		}
-		cout << ret << endl;
+		Init(n);
 	}
 
+	return 0;
 }

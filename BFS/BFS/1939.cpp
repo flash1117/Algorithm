@@ -2,21 +2,22 @@
 #include <cstring>
 #include <queue>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
 int N, M, maxW=0;
 int start, dst;
-bool visited[10001][10001];
+int visited[10001];
 
-vector <pair<int, int>> vec[10001];
+vector <pair<int, int>> vec[100001];
 
 void BFS(int src) {
 
 	queue <pair<int, int>> q;
 	for (int i = 0; i < vec[src].size(); i++) {
 		q.push({ vec[src][i].first, vec[src][i].second });
-		visited[vec[src][i].first][vec[src][i].second] = true;
+		visited[vec[src][i].first] = vec[src][i].second;
 	}
 
 	while (!q.empty()) {
@@ -25,22 +26,19 @@ void BFS(int src) {
 		int curW = q.front().second;
 		q.pop();
 
-		if (cur == dst)
+		if (cur == dst) {
 			if (curW > maxW) maxW = curW;
-
+		}
+		else
 		for (int i = 0; i < vec[cur].size(); i++) {
 			int next = vec[cur][i].first;
 			int nextW = vec[cur][i].second;
 
-			if (!visited[next][nextW])
+			if (visited[next]<curW)
 			{
-				if (curW >= nextW) {
-					q.push({ next,nextW });
-				}
-				else if (curW < nextW)
-					q.push({ next, curW });
-				
-				visited[next][nextW] = true;
+				int mm = min(nextW, curW);
+				q.push({ next,mm });
+				visited[next] = curW;
 			}
 		}
 	}
