@@ -38,7 +38,8 @@ void BFS(int src) {
 			{
 				int mm = min(nextW, curW);
 				q.push({ next,mm });
-				visited[next] = curW;
+			//	visited[next] = curW;
+				visited[next] = mm;
 			}
 		}
 	}
