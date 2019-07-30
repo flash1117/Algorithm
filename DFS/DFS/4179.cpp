@@ -35,11 +35,12 @@ void print() {
 
 int DFS(int x, int y , int cnt) {
 
+	int max = 1000001;
 	if (!isBoundary(x, y) && cnt != 0) return cnt;
 	if (visited[x][y] || (map[x][y] != '.' && cnt != 0)) return 0;
 	
 	visited[x][y] = true;
-	cout << x << " , " << y << endl;
+	cout << x << " , " << y << "cnt :" << cnt <<endl;
 	queue <pair<int, int>> q;
 	for (int i = 0; i < fire.size(); i++) {
 		q.push(make_pair(fire[i].first, fire[i].second));
@@ -64,9 +65,8 @@ int DFS(int x, int y , int cnt) {
 	}
 
 	print();
-	for (int i = 0; i < 4; i++) { // 왜 한번만 돌지?
-		cout << "실행" << endl;
-		return DFS(x + dx[i], y + dy[i], cnt + 1);
+	for (int i = 0; i < 4; i++) { 
+		DFS(x + dx[i], y + dy[i], cnt + 1);
 
 	}
 		

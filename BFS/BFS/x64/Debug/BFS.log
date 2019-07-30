@@ -1,2 +1,4 @@
-﻿  1325-2.cpp
+﻿  4179.cpp
+C:\Users\flash\Desktop\Algorithm\BFS\BFS\4179.cpp(38,26): warning C4267:  '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\flash\Desktop\Algorithm\BFS\BFS\4179.cpp(58,23): warning C4267:  '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   BFS.vcxproj -> C:\Users\flash\Desktop\Algorithm\BFS\x64\Debug\BFS.exe
