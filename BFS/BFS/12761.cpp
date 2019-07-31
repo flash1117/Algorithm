@@ -31,7 +31,7 @@ int BFS() {
 			int next;
 			switch (i)
 			{
-			case 1: {
+			case 0: {
 				next = cur - 1;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
@@ -39,7 +39,7 @@ int BFS() {
 				}
 				break;
 			}
-			case 2:
+			case 1:
 			{
 				next = cur + 1;
 				if (isBoundary(next) && !visited[next]) {
@@ -48,7 +48,7 @@ int BFS() {
 				}
 				break;
 			}
-			case 3:
+			case 2:
 			{
 				next = cur - A;
 				if (isBoundary(next) && !visited[next]) {
@@ -58,7 +58,7 @@ int BFS() {
 				break;
 
 			}
-			case 4: {
+			case 3: {
 				next = cur + A;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
@@ -66,7 +66,7 @@ int BFS() {
 				}
 				break;
 			}
-			case 5:
+			case 4:
 			{
 				next = cur + B;
 				if (isBoundary(next) && !visited[next]) {
@@ -75,7 +75,7 @@ int BFS() {
 				}
 				break;
 			}
-			case 6: {
+			case 5: {
 				next = cur - B;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
@@ -83,7 +83,7 @@ int BFS() {
 				}
 				break;
 			}
-			case 7: {
+			case 6: {
 				next = cur * A;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
@@ -91,7 +91,7 @@ int BFS() {
 				}
 				break;
 			}
-			case 8: {
+			case 7: {
 				next = cur * B;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
@@ -112,4 +112,6 @@ int main() {
 	cin >> A >> B >> N >> M;
 
 	cout << BFS();
+
+	return 0;
 }
