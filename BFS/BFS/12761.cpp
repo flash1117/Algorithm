@@ -27,84 +27,50 @@ int BFS() {
 
 		if (cur == M) return cnt;
 
-		for (int i = 0; i < 8; i++) {
 			int next;
-			switch (i)
-			{
-			case 0: {
 				next = cur - 1;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
 					visited[next] = true;
 				}
-				break;
-			}
-			case 1:
-			{
 				next = cur + 1;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
 					visited[next] = true;
 				}
-				break;
-			}
-			case 2:
-			{
 				next = cur - A;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
 					visited[next] = true;
 				}
-				break;
-
-			}
-			case 3: {
 				next = cur + A;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
 					visited[next] = true;
 				}
-				break;
-			}
-			case 4:
-			{
 				next = cur + B;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
 					visited[next] = true;
 				}
-				break;
-			}
-			case 5: {
 				next = cur - B;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
 					visited[next] = true;
 				}
-				break;
-			}
-			case 6: {
 				next = cur * A;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
 					visited[next] = true;
 				}
-				break;
-			}
-			case 7: {
 				next = cur * B;
 				if (isBoundary(next) && !visited[next]) {
 					q.push(make_pair(next, cnt + 1));
 					visited[next] = true;
 				}
-				break;
-			}
-			default:
-				break;
-			}
 
 		}
-	}
+	
 }
 
 int main() {

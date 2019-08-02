@@ -1,43 +1,49 @@
 #include <iostream>
 #include <cstring>
-#include <vector>
-
 using namespace std;
 
-int k = 0;
-int s[50];
+int k;
+int s[13], ret[13];
+bool visited[13];
 
-vector <int> vec[100];
+void DFS(int depth, int cnt) {
 
-void DFS(int index) {
+	if (depth == 6) {
 
-	if (index == 0) return;
-	else {
-
-		for (int i = 0; i < k; i++) {
-
-
-
-		}
-
+		for (int i = 0; i < 6; i++)
+				cout << ret[i] << " ";
+		cout << endl;
+		return;
 	}
+	
+	for (int i = cnt; i < k; i++) {
 
+		ret[depth] = s[i];
+		DFS(depth + 1, cnt + 1);
+	//	ret[depth] = -1;
+	}
 }
+
 
 int main() {
 
-	memset(s, 0, sizeof(s));
-	int temp = 0;
 	while (1) {
 
 		cin >> k;
 		if (k == 0) break;
+		else {
 
-		for (int i = 0; i < k; i++) {
-			cin >> s[i];
+			for (int i = 0; i < k; i++) 
+				cin >> s[i];
+			
 		}
-	
+
+
+		DFS(0,0);
+		cout << endl;
+		memset(visited, false, sizeof(visited));
+		memset(s, 0, sizeof(s));
+
 	}
 
-	return 0;
 }
