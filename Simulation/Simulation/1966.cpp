@@ -1,46 +1,47 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
+#include <queue>
 
 using namespace std;
 
-vector <int> vec;
 int N, M;
 
 int main() {
 
-	int T, input, cnt =0;
+	int T, input;
+	pair<int,int> dst;
 	cin >> T;
 	while (T--) {
-
+		int cnt = 0;
 		cin >> N >> M;
+
+		queue<pair<int, int>> q;
 		for (int i = 0; i < N; i++) {
 			cin >> input;
-			vec.push_back(input);
+			if (i == M) {
+				dst.first = input;
+				dst.second = i;
+			}
+			q.push(make_pair(input, i));
 		}
 
-		int temp = vec[M];
-		if (N != 1) {
-			for (int i = M + 1;i < vec.size(); i++) {
-				if (vec[i] == temp) cnt++;
-			}
-			if (cnt == 0) cnt = 1;
-			sort(vec.begin(), vec.end(), greater<int>());
-			for (int i = 0; i < vec.size(); i++) {
-			
-				if (vec[i] == temp) break;
-					cnt++;
-			}
+		while (!q.empty()) {
 
-			cout << cnt << endl;
-		}
-		else
-			cout << 1 << endl;
+			int cur = q.front().first;
+			int index = q.front().second;
+			q.pop();
 		
-		vec.clear();
-		cnt = 0;
-	}
+			if (cur == dst.first && index == dst.second)
+			{
+				cout << cnt << endl;
+				break;
+			}
 
+		
+		}
+
+
+
+	}
 
 	return 0;
 }
