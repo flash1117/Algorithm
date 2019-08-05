@@ -6,80 +6,51 @@ using namespace std;
 
 int R, C;
 char map[21][21];
-bool visited[21][21];
+bool visited[30];
 
+int maxCnt = 0;
 int dx[] = { 0,0,-1,1 };
 int dy[] = { -1,1,0,0 };
 
-vector <int> vec;
-
 bool isBoundary(int x, int y) {
-	if (x<0 || y<0 || x>R - 1 || y> C - 1) return false;
+
+	if (x < 0 || y<0 || x>R - 1 || y>C - 1) return false;
 	return true;
 }
 
-bool isSame(int x, int y) {
+int DFS(int x, int y, int cnt) {
 
-	for (int i = 0; i < x; i++) {
+	int curChar = map[x][y] - 'A';
+	visited[curChar] = true;
 
-		for (int j = 0; j < y; i++) {
+	if (maxCnt < cnt) maxCnt = cnt;
 
-			if (visited[i][j] && map[i][j] == map[x][y])
-				return true;
+	for (int i = 0; i < 4; i++) {
+		int nextX = x + dx[i];
+		int nextY = y + dy[i];
+		int nChar = map[nextX][nextY] - 'A';
+
+		if (isBoundary(nextX, nextY) && !visited[nChar]) {
+
+			DFS(nextX, nextY, cnt + 1);
 
 		}
+
 	}
 
-	return false;
+	visited[curChar] = false;
+	return cnt;
+
 }
-
-void DFS(int x, int y, int cnt) {
-
-	visited[x][y] = true;
-
-	if (!isBoundary(x, y)) return;
-	else {
-
-		for (int i = 0; i < 4; i++) {
-			int nextX = x + dx[i];
-			int nextY = y + dy[i];
-
-			if (isSame(nextX, nextY)) {
-				vec.push_back(cnt);
-				return;
-			}
-				
-			else if(isBoundary(nextX, nextY) && visited[nextX][nextY] == false){
-				cout << nextX <<" , "<< nextY << endl;
-				DFS(nextX, nextY, cnt + 1);
-
-			}
-		}
-	}
-}
-
-
 
 int main() {
-	string temp;
-	memset(visited, false, sizeof(visited));
 
 	cin >> R >> C;
-
-	for (int i = 0; i < R; i++) {
-		cin >> temp;
-		for (int j = 0; j < C; j++) {
-			map[i][j] = temp[j] - '0';
-		}
-	}
-
-	DFS(0, 0, 1);
-
-
-	/*for (int i = 0; i < vec.size(); i++) {
-
-		cout << vec[i] << " ";
-	}*/
-	
+	for (int i = 0; i < R; i++) 
+		for (int j = 0; j < C; j++) 
+			cin >> map[i][j];
+		
+	DFS(0, 0, 0);
+	cout << maxCnt+1;
 	return 0;
 }
