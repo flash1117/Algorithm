@@ -11,7 +11,7 @@ bool visited[401];
 bool DFS(int h1, int h2,int c) {
 	if (visited[h2]) return 0;
 	if (h1 == h2) return 1;
-	cout << "µµÂøÁ¡ : "<<h2 << " " << c << endl;
+//	cout << "µµÂøÁ¡ : "<<h2 << " " << c << endl;
 	visited[h2] = 1;
 	bool a;
 	if (!c)
@@ -49,7 +49,7 @@ int main() {
 		if (DFS(input1, input2,0)) cout << 1 << endl;
 		else {
 			Init(n);
-			cout << -DFS(input2, input1,1) << endl;
+			cout << -DFS(input1, input2,1) << endl;
 		}
 		Init(n);
 	}
