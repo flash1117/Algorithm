@@ -15,8 +15,21 @@ int dy[] = { -1,1,0,0 };
 
 typedef struct {
 
-	int x, y, s, w;
+	int x, y;
 }pos;
+
+void print() {
+	cout << endl;
+	for (int i = 0; i < R; i++) {
+
+		for (int j = 0; j < C; j++) {
+
+			cout << visited[i][j];
+		}
+		cout << endl;
+	}
+
+}
 
 bool isBoundary(int x, int y) {
 	if (x<0 || y<0 || x>R - 1 || y>C - 1) return false;
@@ -29,21 +42,21 @@ void BFS(int x, int y) {
 	queue <pos> q;
 	visited[x][y] = true;
 	
-	if(map[x][y] == 'k')
-		q.push({ x,y,1,0 });
-	else if(map[x][y] == 'v')
-		q.push({ x,y,0,1 });
-	else
-		q.push({ x,y,0,0 });
+	q.push({ x,y });
 
 	while (!q.empty()) {
 
 		int curX = q.front().x;
 		int curY = q.front().y;
-		lw = q.front().w;
-		ls = q.front().s;
 
 		q.pop();
+
+		if (map[curX][curY] == 'v') 
+			lw++;
+		
+		else if (map[curX][curY] == 'k') 
+			ls++;
+		
 		for (int i = 0; i < 4; i++) {
 
 			int nextX = curX + dx[i];
@@ -51,12 +64,7 @@ void BFS(int x, int y) {
 
 			if (isBoundary(nextX, nextY) && map[nextX][nextY] != '#' && !visited[nextX][nextY]) {
 
-				if (map[nextX][nextY] == 'k')  // sheep
-					q.push({ nextX, nextY, ls + 1, lw });
-				else if (map[nextX][nextY] == 'v') // wolf
-					q.push({ nextX, nextY, ls, lw +1});
-				else
-					q.push({ nextX, nextY, ls, lw });
+				q.push({ nextX, nextY});
 				visited[nextX][nextY] = true;
 			}
 
@@ -64,10 +72,13 @@ void BFS(int x, int y) {
 
 	}
 
-	if (ls > lw)
+	if (ls > lw) 
 		sheep += ls;
-	else
+	
+	else 
 		wolf += lw;
+	
+		
 }
 
 int main() {
