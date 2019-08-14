@@ -13,7 +13,7 @@ vector <pair<int, int>> apple;
 vector <pair<int, char>> snake;
 
 int dx[] = { 0,1,0,-1 };
-int dy[] = { 1.0,-1,0 }; 
+int dy[] = { 1,0,-1,0 }; 
 
 typedef struct {
 
@@ -51,8 +51,6 @@ int solve() {
 	tail.push_back({ 0,0 });
 	map[0][0] = 2;
 	while (!q.empty()) {
-
-		print();
 
 		int curX = q.front().x;
 		int curY = q.front().y;
@@ -97,11 +95,6 @@ int solve() {
 				}
 			}
 		}
-
-		cout << dx[direct] << " , "<<dy[direct] << endl;
-		cout << "next X,Y" << nextX << " , " << nextY << endl;
-		
-
 		if (isBoundary(nextX, nextY)) {
 			q.push({ nextX, nextY, ccnt + 1, direct });
 			tail.push_back({ nextX, nextY });
@@ -109,7 +102,9 @@ int solve() {
 			if (map[nextX][nextY] == 2) {
 				map[tail.front().first][tail.front().second] = 0;
 				tail.pop_front();
-				if(map[nextX][nextY] == 2)
+				
+				if (tail.front().first == nextX && tail.front().second == nextY);
+				else
 					return ccnt + 1;
 			}
 				
@@ -142,6 +137,7 @@ int main() {
 		snake.push_back(make_pair(input1, dir));
 
 	}
+
 	int ret = solve();
 	cout << ret;
 	return 0;

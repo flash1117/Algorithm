@@ -1,4 +1,3 @@
 ﻿  3190.cpp
-C:\Users\flash\Desktop\Algorithm\Simulation\Simulation\3190.cpp(16,15): warning C4244:  '초기화 중': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\flash\Desktop\Algorithm\Simulation\Simulation\3190.cpp(16,15): warning C4244: C:\Users\flash\Desktop\Algorithm\Simulation\Simulation\3190.cpp(126) : warning C4715: 'solve': 모든 제어 경로에서 값을 반환하지는 않습니다.
+  C:\Users\flash\Desktop\Algorithm\Simulation\Simulation\3190.cpp(121) : warning C4715: 'solve': 모든 제어 경로에서 값을 반환하지는 않습니다.
   Simulation.vcxproj -> C:\Users\flash\Desktop\Algorithm\Simulation\x64\Debug\Simulation.exe
