@@ -8,6 +8,7 @@ using namespace std;
 
 vector <int> hobit;
 int Ary[7];
+bool isAnswer;
 void solve(int depth , int cnt) {
 
 	if (depth == 7) {
@@ -15,9 +16,12 @@ void solve(int depth , int cnt) {
 		for (int i = 0; i < 7; i++)
 			sum += Ary[i];
 		
-		if (sum == 100)
+		if (sum == 100) {
 			for (int i = 0; i < 7; i++)
 				cout << Ary[i] << Endl;
+			isAnswer = true;
+		}
+			
 		return;
 	}
 
@@ -25,8 +29,9 @@ void solve(int depth , int cnt) {
 
 
 		Ary[depth] = hobit[i];
-		if(Ary[depth] > Ary[depth-1] || depth == 0)
-			solve(depth + 1, cnt + 1);
+//		if(Ary[depth] > Ary[depth-1] || depth == 0)
+		solve(depth + 1, cnt + 1);
+		if (isAnswer) return;
 	}
 }
 
