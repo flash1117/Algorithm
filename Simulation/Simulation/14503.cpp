@@ -1,66 +1,93 @@
 #include <iostream>
-#include <queue>
-#include <cstring>
 
 using namespace std;
 
-int dx[] = {-1,0,1,0};
-int dy[] = {0,1,0,-1};
+#define Endl "\n"
 
-int N, M;
-int sx, sy, dir;
+int N, M, cnt;
+
+int dx[] = { 0,1,0,-1 };
+int dy[] = { -1,0,1,0 };
+
 int map[51][51];
-bool visited[51][51];
-
-typedef struct {
-
-	int x, y, direct;
-
-}pos;
+int visited[51][51];
 
 bool isBoundary(int x, int y) {
 
-	if (x<0 || y<0 || x>N - 1 || y>M - 1) return false;
+	if (x<0 || y<0 || x>N - 1 || y>N - 1) return false;
 	return true;
+
 }
 
-int BFS() {
+void print() {
+	cout << Endl;
+	for (int i = 0; i < N; i++) {
 
-	int cnt = 0;
-	queue <pos> q;
-	q.push({ sx,sy, dir });
-	visited[sx][sy] = true;
-
-	while (!q.empty()) {
-
-		int curX = q.front().x;
-		int curY = q.front().y;
-		int direction = q.front().direct;
-		q.pop();
-
-		int nextX = curX + dx[direction];
-		int nextY = curY + dy[direction];
-		if (isBoundary(nextX, nextY)) {
-
+		for (int j = 0; j < M; j++) {
+			cout << visited[i][j] << " ";
+			
 		}
+		cout << Endl;
+	}
+
+}
+
+// 0 -> 3 -> 2 ->1 -> 0
+void solve(int x, int y, int dir) {
+
+	if (!isBoundary(x, y) || visited[x][y] || map[x][y] == 1) return;
+	visited[x][y] = true;
+	cnt++;
+
+	print();
+	bool isContinue = true;
+	int checkCnt = 0;
+
+	while (1) {
+		
+		if (map[x + dx[dir]][y + dy[dir]] == 0)
+			solve(x + dx[dir], y + dy[dir], dir);
+		else {
+
+			if (dir == 0)
+				solve(x + dx[dir + 3], y + dy[dir + 3], dir + 3);
+			else
+				solve(x + dx[dir - 1], y + dy[dir - 1], dir - 1);
+		}
+
+		for (int i = 0; i < 4; i++) {
+			int nextX = x + dx[i];
+			int nextY = y + dy[i];
+
+			if (map[nextX][nextY] == 1 || visited[nextX][nextY])
+				cnt++;
+			if (cnt == 3)
+				isContinue = false;
+		}
+
+		if (!isContinue) break;
 
 	}
 
-
-
+	
 }
 
 int main() {
 
+	int loc1, loc2, d, input;
 	cin >> N >> M;
-	cin >> sx >> sy >> dir;
+
+	cin >> loc1 >> loc2 >> d;
 	for (int i = 0; i < N; i++) {
 
 		for (int j = 0; j < M; j++) {
-			cin >> map[i][j];
+			cin >> input;
+			map[i][j] = input;
 		}
 	}
-	BFS();
 
+	solve(loc1, loc2, d);
+
+	cout << cnt;
 	return 0;
 }
