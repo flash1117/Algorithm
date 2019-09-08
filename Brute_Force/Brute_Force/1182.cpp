@@ -1,42 +1,38 @@
 #include <iostream>
-#include <vector>
 
 using namespace std;
 
-#define Endl "\n"
+#define MAXNUM 21
 
-vector <int> vec;
-int N, S, cnt, sum;
-int ary[21];
+int N, S;
+int num[MAXNUM];
+int ans;
 
-void DFS(int depth , int dst) {
+void solve(int i , int prevSum) {
 
-	sum += vec[depth];
+	if (i == N) {
 
-	if (depth >= N) return;
+		if (prevSum == S)
+			ans++;
+		return;
+	}
 
-	if (sum == S)
-		cnt++;
-
-
-	DFS(depth + 1, sum - vec[depth]);
-
-	DFS(depth + 1, sum);
+	solve(i + 1, prevSum + num[i]);
+	solve(i + 1, prevSum);
 }
 
 int main() {
 
 	cin >> N >> S;
-	int input;
-
 	for (int i = 0; i < N; i++) {
-		cin >> input;
-		vec.push_back(input);
+		cin >> num[i];
 	}
 
-	DFS(0,0);
+	solve(0,0);
 
-	cout << cnt;
+	if (S == 0) ans -= 1;
+	cout << ans;
 
 	return 0;
 }
+
