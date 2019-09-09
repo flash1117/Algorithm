@@ -1,39 +1,27 @@
 #include <iostream>
-#include <vector>
+#include <algorithm>
 
 using namespace std;
 
-#define Endl "\n"
-int N;
-vector <pair<int, int>> consulting;
-int benefit[16];
-int maxBenefit;
+int D[16], T[16], P[16];
+int n, ans;
 
-void solve() {
+int dp(int day) {
 
-	for (int i = 0; i < consulting.size(); i++) {
+	if (day == n + 1) return 0;
+	if (day > n + 1) return -987;
+	if (D[day] > 0) return D[day];
 
-
-
-		if (benefit[consulting[i].first] < consulting[i].second)
-			benefit[consulting[i].first] = consulting[i].second;
-
-
-	}
-
+	return D[day] = max(dp(day + 1), dp(day + T[day]) + P[day]);
 }
 
 int main() {
 
-	cin >> N;
-	int T, P;
-	for (int i = 0; i < N; i++) {
+	cin >> n;
+	for (int i = 1; i <= n; i++)
+		cin >> T[i] >> P[i];
 
-		cin >> T >> P;
-		consulting.push_back(make_pair(T, P));
-
-	}
-
-	solve(0, 0);
+	cout << dp(1);
 	return 0;
+
 }
