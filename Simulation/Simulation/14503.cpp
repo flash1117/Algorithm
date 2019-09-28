@@ -1,90 +1,113 @@
 #include <iostream>
+#include <queue>
 
 using namespace std;
 
-#define Endl "\n"
+typedef struct {
 
-int N, M, cnt;
+	int x, y, dir;
+}pos;
 
-int dx[] = { 0,1,0,-1 };
-int dy[] = { -1,0,1,0 };
-
+int N, M, r, c, d;
 int map[51][51];
+bool visited[51][51];
+int dx[] = { -1, 0, 1,0 };
+int dy[] = { 0,1,0,-1 };
 
 bool isBoundary(int x, int y) {
-
-	if (x<0 || y<0 || x>N - 1 || y>M - 1) return false;
+	if (x< 0 || y<0 || x>N - 1 || y>M - 1) return false;
 	return true;
-
 }
 
 void print() {
 
-	cout << Endl;
+	cout << endl;
 	for (int i = 0; i < N; i++) {
 
 		for (int j = 0; j < M; j++) {
 
-			cout << map[i][j] << " ";
+			cout << visited[i][j];
 		}
-		cout << Endl;
+		cout << endl;
 	}
+}
+
+int nextDir(int currentDirection) {
+
+	if (currentDirection == 0) return 3;
+	else if (currentDirection == 1) return 0;
+	else if (currentDirection == 2) return 1;
+	else if (currentDirection == 3) return 2;
+	else
+		return -1;
+}
+
+int backDir(int currentDirection) {
+	if (currentDirection == 0) return 2;
+	else if (currentDirection == 1) return 3;
+	else if (currentDirection == 2) return 0;
+	else if (currentDirection == 3) return 1;
+	else
+		return -1;
 
 }
 
+int solve() {
 
-// 0 -> 3 -> 2 ->1 -> 0
-void solve(int x, int y, int dir) {
+	int cnt = 1;
+	queue <pos> q;
+	visited[r][c] = true;
+	q.push({ r,c,d });
 
-	if (!isBoundary(x, y) || map[x][y] == 1) return;
+	while (!q.empty()) {
+	//	print();
+		int curX = q.front().x;
+		int curY = q.front().y;
+		int curDir = q.front().dir;
+
+		q.pop();
+
+		for (int i = 0; i < 4; i++) {
+
+			curDir = nextDir(curDir);
+				
+			int nextX = curX + dx[curDir];
+			int nextY = curY + dy[curDir];
+
+			if (isBoundary(nextX, nextY) && map[nextX][nextY] == 0 && !visited[nextX][nextY]) {
+				visited[nextX][nextY] = true;
+				q.push({ nextX, nextY, curDir });
+				cnt++;
+				break;
+			}
+			
+		}
+
+		if (q.empty()) {
+
+			int nextX = curX + dx[backDir(curDir)];
+			int nextY = curY + dy[backDir(curDir)];
+
+			if (map[nextX][nextY] == 0 && isBoundary(nextX,nextY))
+				q.push({ nextX, nextY, curDir });
+
+		}
+	}
 	
-	print();
-
-	if (map[x][y] == 0) {
-		cnt++;
-		map[x][y] = cnt;
-		
-	}
-
-	for (int i = 0; i < 4; i++) {
-
-		int nextDir = dir - 1 < 0 ? 3 : dir - 1;
-		int nextX = x + dx[nextDir], nextY = y + dy[nextDir];
-
-		if (map[nextX][nextY] == 0) {
-
-			solve(nextX, nextY, nextDir);
-			return;
-		}
-		else {
-
-			dir = nextDir;
-		}
-
-	}
-
-
-	int nextX = x - dx[dir], nextY = y - dy[dir];
-	solve(nextX, nextY, dir);
-
+	return cnt;
 }
 
 int main() {
 
-	int loc1, loc2, d, input;
 	cin >> N >> M;
+	cin >> r >> c >> d;
 
-	cin >> loc1 >> loc2 >> d;
 	for (int i = 0; i < N; i++) {
-
 		for (int j = 0; j < M; j++) {
-			cin >> input;
-			map[i][j] = input;
+			cin >> map[i][j];
 		}
 	}
 
-	solve(loc1, loc2, d);
-
-	cout << cnt;
+	cout << solve();
 	return 0;
 }

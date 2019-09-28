@@ -1,43 +1,45 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
+#define Endl "\n"
+
 int N;
+// N 이 주어졌을때, 가장 작은 생성자 구하기
 
-int searchCreate() {
+int getCreateNum() {
 
-	int creator = 1;
+	for (int i = 1; i < N; i++) {
 
-	while (1) {
+		int buf = 0, q = 0;
+		buf += i;
 
-		int temp = creator;
-		int sum = creator;
+		q = i;
+		while (1) {
 
-		while (temp) {
+			buf += q % 10;
+			q /= 10;
 
-			sum += temp % 10;
-			temp /= 10;
+			if (q < 1) break;
+
 		}
-
-		if (creator == N || sum == N)
-			break;
-
-		creator++;
-
+		if (buf == N) return i;
 	}
-	return creator;
 
+	return -1;
 }
+
 
 int main() {
 
 	cin >> N;
-	int result = searchCreate();
+	int ret = getCreateNum();
 
-	if (result == N)
-		cout << 0;
+	if (ret == -1)
+		cout << 0 << Endl;
 	else
-		cout << result;
-	return 0;
+		cout << ret;
 
+	return 0;
 }
