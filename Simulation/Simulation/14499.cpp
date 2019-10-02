@@ -55,7 +55,6 @@ void diceChange(int direction) {
 		dice[2] = dice[0];
 		dice[0] = buf;
 	}
-	else return;
 }
 
 void print() {
@@ -69,7 +68,7 @@ void print() {
 
 void solve() {
 
-	int orderNum = 0;
+	int orderNum=0, diceBottom = 0;
 	queue <pos> q;
 	q.push({ diceX, diceY , order[0] });
 	dice[5] = map[diceX][diceY];
@@ -84,26 +83,24 @@ void solve() {
 
 		if (orderNum > 0) {
 			diceChange(curDir);
-//			cout << dice[2] << Endl; // print top of dice
+			cout << dice[2] << Endl; // print top of dice
 		}
 		
 		if (orderNum > 0 && map[curX][curY] == 0 && dice[5] != 0)
-		{
 			map[curX][curY] = dice[5];
-			dice[5] = 0;
-		}
+		
 		else if (map[curX][curY] != 0) {
 			dice[5] = map[curX][curY];
 			map[curX][curY] = 0;
 		}
 
-		cout << "current Direction : " << curDir << Endl;
+//		cout << "current Direction : " << curDir << Endl;
 
-		for (int i = 0; i < 6; i++)
-			cout << dice[i] << " ";
-		cout << Endl;
+//		for (int i = 0; i < 6; i++)
+//			cout << dice[i] << " ";
+//		cout << Endl;
 
-		print();
+//		print();
 
 		for (int i = orderNum; i < K; i++) {
 //			cout << "direction : " << order[orderNum] << Endl;
