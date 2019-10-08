@@ -1,59 +1,66 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <queue>
 
 using namespace std;
 
-int N;
-vector <int> vec[100001];
-
 typedef struct {
-
-	int src, cnt;
+	int x, y;
 }pos;
 
-void BFS() {
+int N;
+vector <pos> vec;
+bool visited[100001];
+
+void solve(int start) {
 
 	queue <pos> q;
-	for (int i = 0; i < N; i++) {
+	q.push({ vec[start].x, vec[start].y });
+	visited[start] = true;
 
-		if (!vec[i].empty()) 
-			q.push({i,0});
-
-	}
-	
 	while (!q.empty()) {
 
-		int cur = q.front().src;
-		int ccnt = q.front().cnt;
+		int startTime = q.front().x;
+		int endTime = q.front().y;
 
 		q.pop();
 
-		for (int i = 0; i < vec[cur].size(); i++) {
-
-			int next = vec[cur][i];
-			q.push({})
-
+		for (int i = 0; i < N; i++) {
+			
+			if (vec[i].x >= endTime && !visited[i]) {
+				visited[i] = true;
+				q.push({ vec[i].x, vec[i].y });
+				break;
+			}
 		}
 
-
-
 	}
-
 
 }
 
 int main() {
 
-	int input1, input2;
+	int startT, endT, cnt =0;
 	cin >> N;
 	for (int i = 0; i < N; i++) {
-
-		cin >> input1 >> input2;
-		vec[input1].push_back(input2);
-
+		cin >> startT >> endT;
+		vec.push_back({startT, endT});
+			
 	}
 
-	BFS();
+	sort(vec.begin(), vec.end());
+
+	for (int i = 0; i < N; i++) {
+
+		if (!visited[i]) {
+			solve(i);
+			cnt++;
+		}
+			
+	}
+		
+
+	cout << cnt;
 	return 0;
 }

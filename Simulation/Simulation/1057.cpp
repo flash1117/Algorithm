@@ -2,30 +2,32 @@
 
 using namespace std;
 
-int N, round=1, team1, team2;
+int N, a, b;
 
-typedef struct {
+int solve() {
 
-	int x, y;
-}pos;
+	int round = 1;
 
-void solve() {
+	while (N) {
 
+		if (b > a && b - a == 1 && b % 2 == 0) return round;
+		else if (a > b && a - b == 1 && a % 2 == 0) return round;
+		else round++;
 
+		a = a / 2 + a % 2;
+		b = b / 2 + b % 2;
+
+		N /= 2;
+	}
+
+	return -1;
 }
 
 int main() {
 
-	cin >> N >> team1 >> team2;
+	cin >> N >> a >> b;
 
-	int temp = 0;
-	if (team1 > team2)
-	{
-		temp = team2;
-		team2 = team1;
-		team1 = temp;
-	}
-	solve();
+	cout << solve();
 
 	return 0;
 }

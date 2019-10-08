@@ -1,0 +1,3 @@
+﻿  문자열 자르기.cpp
+C:\Users\flash\Desktop\Algorithm\usefulFunc\usefulFunc\문자열 자르기.cpp(29,20): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
+  usefulFunc.vcxproj -> C:\Users\flash\Desktop\Algorithm\usefulFunc\Debug\usefulFunc.exe
