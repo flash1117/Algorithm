@@ -1,56 +1,37 @@
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
 int N;
-int dp[1001];
-int home[1001][3];
-int sum;
+int map[1001][4];
+int dp[1001][4];
 
-void solve() {
+int solve() {
 
-	int prev = 0;
-	
+	for (int i = 1; i <= N; i++) {
 
-	for (int i = 0; i < N; i++) {
-
-		int cost = 1001;
-
-		for (int j = 0; j < 3; j++) {
-
-			if (j != prev || i == 0) {
-
-				if (home[i][j] < cost) {
-					cost = home[i][j]; prev = j;
-				}
-				
-			}
-
-
-		}
-		sum += cost;
+		dp[i][1] = min(dp[i - 1][2], dp[i - 1][3]) + map[i][1];
+		dp[i][2] = min(dp[i - 1][1], dp[i - 1][3]) + map[i][2];
+		dp[i][3] = min(dp[i - 1][1], dp[i - 1][2]) + map[i][3];
+		
 	}
 
+	int temp = min(dp[N][1], dp[N][2]);
+	temp = min(temp, dp[N][3]);
 
+	return temp;
 }
 
 
 int main() {
-	int input;
+
 	cin >> N;
-	
-	for (int i = 0; i < N; i++) {
+	for (int i = 1; i <= N; i++)
+		for (int j = 1; j <= 3; j++)
+			cin >> map[i][j];
 
-		for (int j = 0; j < 3; j++) {
-			cin >> input;
-			home[i][j] = input;
-		}
-	}
-	
-	solve();
+	cout << solve();
 
-
-	cout << sum;
 	return 0;
-
 }

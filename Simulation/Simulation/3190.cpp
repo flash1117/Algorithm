@@ -1,144 +1,96 @@
 #include <iostream>
-#include <cstring>
 #include <vector>
-#include <queue>
 #include <deque>
 
 using namespace std;
 
-int N, K, L;
+int N, K, X;
 int map[101][101];
-
-vector <pair<int, int>> apple;
-vector <pair<int, char>> snake;
+vector <pair<int, char>> vec;
 
 int dx[] = { 0,1,0,-1 };
-int dy[] = { 1,0,-1,0 }; 
+int dy[] = { 1,0,-1,0 };
 
 typedef struct {
-
-	int x, y, cnt, dir;
+	int x, y, dir;
 }pos;
+
+int setDir(int curDir, char rot) {
+
+	if (rot == 'D') { // ¿À¸¥ÂÊ
+		if (curDir != 3) return curDir + 1;
+		else return 0;
+	}
+	else if (rot == 'L') // ¿ÞÂÊ
+	{
+		if (curDir != 0) return curDir - 1;
+		else return 3;
+	}
+	return -1;
+}
 
 bool isBoundary(int x, int y) {
 
-	if (x<0 || y<0 || x>N - 1 || y>N - 1) return false;
+	if (x<0 || y< 0 || x>N - 1 || y>N - 1) return false;
 	return true;
+
 }
 
-void print() {
-	cout << endl;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
+bool isExist(deque <pos>& dq, int nextX, int nextY) {
 
-			cout << map[i][j] << " ";
-
-		}
-		cout << endl;
-	}
-
+	for (int i = 0; i < dq.size(); i++) 
+		if (nextX == dq[i].x && nextY == dq[i].y) return true;
+	return false;
 }
 
 int solve() {
 
-	for (int i = 0; i < apple.size(); i++) 
-		map[apple[i].first-1][apple[i].second-1] = 1;
-	
-	deque <pair<int, int>> tail;
-	queue <pos> q;
+	int time = 0, index = 0;
+	deque <pos> snake;
+	snake.push_front({ 0,0,0 });
 
-	q.push({ 0,0,0,0 });
-	tail.push_back({ 0,0 });
-	map[0][0] = 2;
-	while (!q.empty()) {
+	while (!snake.empty()) {
 
-		int curX = q.front().x;
-		int curY = q.front().y;
-		int ccnt = q.front().cnt;
-		int direct = q.front().dir;
+		time++;
+		int Dir = snake.front().dir;
+		
+		if (index < vec.size() && time-1 == vec[index].first) 
+			Dir = setDir(Dir, vec[index++].second);
+			
+		int nextX = snake.front().x + dx[Dir];
+		int nextY = snake.front().y + dy[Dir];
 
-		q.pop();
+		if (isExist(snake, nextX, nextY) || !isBoundary(nextX, nextY)) return time;
 
-		int nextX = curX + dx[direct];
-		int nextY = curY + dy[direct];
+		if (map[nextX][nextY] == 1) 
+			map[nextX][nextY] = 0;
+		else snake.pop_back();
 
-		for (int i = 0; i < snake.size(); i++) {
-			if (ccnt == snake[i].first) {
+		snake.push_front({ nextX,nextY,Dir });
 
-				if (snake[i].second == 'L') {
-
-					if (direct == 0) {
-						direct = 3;
-						nextX = curX + dx[3];
-						nextY = curY + dy[3];
-					}
-
-					else {
-						nextX = curX + dx[direct - 1];
-						nextY = curY + dy[direct - 1];
-						direct--;
-					}
-
-				}
-				else if (snake[i].second == 'D') {
-					if (direct == 3)
-					{
-						direct = 0;
-						nextX = curX + dx[0];
-						nextY = curY + dy[0];
-					}
-					else {
-						nextX = curX + dx[direct + 1];
-						nextY = curY + dy[direct + 1];
-						direct++;
-					}
-				}
-			}
-		}
-		if (isBoundary(nextX, nextY)) {
-			q.push({ nextX, nextY, ccnt + 1, direct });
-			tail.push_back({ nextX, nextY });
-
-			if (map[nextX][nextY] == 2) {
-				map[tail.front().first][tail.front().second] = 0;
-				tail.pop_front();
-				
-				if (tail.front().first == nextX && tail.front().second == nextY);
-				else
-					return ccnt + 1;
-			}
-				
-			if (map[nextX][nextY] == 0) {
-				map[tail.front().first][tail.front().second] = 0;
-				tail.pop_front();
-
-			}
-			map[nextX][nextY] = 2;
-	
-		}
-		else return ccnt + 1;
 	}
-}
 
+	return time;
+}
 
 int main() {
 
-	int input1, input2;
+	int appleX, appleY;
+	int time;
 	char dir;
-
 	cin >> N >> K;
-	for (int i = 0; i < K; i++) {
-		cin >> input1 >> input2;
-		apple.push_back(make_pair(input1, input2));
+	for (int i = 0; i < K; i++)
+	{
+		cin >> appleX >> appleY;
+		map[appleX-1][appleY-1] = 1;
 	}
-	cin >> L;
-	for (int i = 0; i < L; i++) {
-		cin >> input1 >> dir;
-		snake.push_back(make_pair(input1, dir));
-
+	cin >> X;
+	for (int i = 0; i < X; i++) {
+		cin >> time >> dir;
+		vec.push_back(make_pair(time, dir));
 	}
 
-	int ret = solve();
-	cout << ret;
+	cout << solve();
+
 	return 0;
 }
