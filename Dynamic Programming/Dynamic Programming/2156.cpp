@@ -11,14 +11,16 @@ void solve()
 {
 	dp[1] = wine[1];
 	dp[2] = wine[2] + dp[1];
-
-	for (int i = 3; i <= n; i++) {
-
-		dp[i] = max(wine[i] + dp[i - 2], dp[i - 1]);
-	}
+	dp[3] = max(dp[2], dp[1] + wine[3]);
+	dp[3] = max(wine[3] + wine[2], dp[3]);
 	
-	cout << dp[n];
+	for (int i = 4; i <= n; i++) {
 
+		dp[i] = max(dp[i - 3] + wine[i - 1] + wine[i], dp[i - 2] + wine[i]);
+		dp[i] = max(dp[i - 1], dp[i]);
+	}
+
+	cout << dp[n];
 }
 
 int main() {
