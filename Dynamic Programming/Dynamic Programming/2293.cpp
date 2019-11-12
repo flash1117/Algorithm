@@ -2,23 +2,13 @@
 
 using namespace std;
 
-int n, k;
-int cost[102];
-
-void solve() {
-
-
-
-
-}
-
 int main() {
 
-	cin >> n >> k;
-	for (int i = 1; i <= n; i++) {
-		cin >> cost[i];
-	}
-	solve();
+	long long temp = 0;
+	for (int i = 150; i <= 200; i++) {
 
+		temp += i;
+	}
+	cout << temp * 100;
 	return 0;
 }

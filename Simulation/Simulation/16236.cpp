@@ -4,88 +4,139 @@
 using namespace std;
 
 typedef struct {
-	int x, y, killCnt, move;
+	int x, y, sharkSize, kCnt;
 }pos;
-
-int dx[] = { -1,0,1,0 };
-int dy[] = { 0,-1,0,-1 };
 
 int N;
 int map[21][21];
-bool visited[21][21];
-pos shark;
+
+int dx[] = { -1,0,0,1 };
+int dy[] = { 0,-1,1,0 };
+int nFishX, nFishY, nCnt;
+
+void print() {
+	cout << endl;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+
+			cout << map[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+}
 
 bool isBoundary(int x, int y) {
-
 	if (x<0 || y<0 || x>N - 1 || y>N - 1) return false;
 	return true;
 }
 
-void init() {
+bool nextFish(int x, int y, int sharkSize) {
 
-	for (int i = 0; i < N; i++) 
-		for (int j = 0; j < N; j++) 
+	queue <pos> temp;
+	temp.push({ x,y,sharkSize, 0 });
+
+	bool visited[21][21];
+	for (int i = 0; i < 21; i++)
+		for (int j = 0; j < 21; j++)
 			visited[i][j] = false;
-}
-int solve() {
 
-	int time = 0, sharkSize = 2;
+	nFishX = 0; nFishY = 0; nCnt = 0;
+	while (!temp.empty()) {
+
+		pos tmp = temp.front();
+		temp.pop();
+
+		for (int i = 0; i < 4; i++) {
+			int nextX = tmp.x + dx[i];
+			int nextY = tmp.y + dy[i];
+			int sSize = tmp.sharkSize;
+			int moveCnt = tmp.kCnt;
+			
+			if (isBoundary(nextX, nextY) && map[nextX][nextY] <= sSize && !visited[nextX][nextY]) {
+				visited[nextX][nextY] = true;
+//				cout << nextX << " " << nextY << endl;
+				if (map[nextX][nextY] == 0 || map[nextX][nextY] == sSize) {
+					temp.push({ nextX, nextY, sSize, moveCnt+1 });
+				}
+				else {
+					
+					if (nFishX == 0 && nFishY == 0 && nCnt == 0) {
+						nFishX = nextX;
+						nFishY = nextY;
+						nCnt = ++moveCnt;
+					}
+					else {
+
+						if (nCnt <= moveCnt) return true;
+						else {
+							if (nextX < nFishX) {
+								nFishX = nextX;
+								nFishY = nextY;
+							}
+							else if (nextX == nFishX && nextY < nFishY) {
+								nFishY = nextY;
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	if (nFishX == 0 && nFishY == 0 && nCnt == 0) return false;
+	else return true;
+}
+
+int solve(int X, int Y) {
+
+	int ret = 0;
 	queue <pos> q;
-	q.push({ shark.x, shark.y ,0, 0});
-	
+	q.push({ X,Y,2,0 });
+
 	while (!q.empty()) {
 
 		int curX = q.front().x;
 		int curY = q.front().y;
-		int kCnt = q.front().killCnt;
-		int sharkMove = q.front().move;
+		int sSize = q.front().sharkSize;
+		int ccnt = q.front().kCnt;
+		map[curX][curY] = 0;
+
 		q.pop();
-
-		for (int i = 0; i < 4; i++) {
-			int nextX = curX + dx[i];
-			int nextY = curY + dy[i];
-
-			if (isBoundary(nextX, nextY) && map[nextX][nextY] < sharkSize && !visited[nextX][nextY]) {
-
-				visited[nextX][nextY] = true;
-				if (map[nextX][nextY] != 0) {
-					init();
-					if (kCnt + 1 == sharkSize) {
-						sharkSize++;
-						q.push({ nextX, nextY, 0 ,0 });
-					}
-					else
-						q.push({ nextX, nextY, kCnt + 1 , 0 });
-					time += sharkMove;
-				}
-				else
-					q.push({ nextX, nextY, kCnt , sharkMove + 1 });
+//		cout << endl;
+//		cout << "shark Size : " << sSize;
+//		print();
+		bool state = nextFish(curX, curY, sSize);
+		if (!state) return ret;
+		else {
+		
+			ccnt++;
+			if (ccnt == sSize) {
+				sSize++;
+				ccnt = 0;
 			}
-			else if (isBoundary(nextX, nextY) && map[nextX][nextY] == sharkSize && !visited[nextX][nextY]) {
-				q.push({ nextX, nextY, kCnt , sharkMove + 1 });
-				visited[nextX][nextY] = true;
-			}
+			q.push({ nFishX,nFishY,sSize,ccnt });
+			ret+= nCnt;
 		}
-
 	}
 
-	return time;
+	return ret;
 }
+
 
 int main() {
 
+	int x=0, y=0;
 	cin >> N;
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			cin >> map[i][j];
-			if (map[i][j] == 9) {
-				shark.x = i;
-				shark.y = j;
-			}
+			if (map[i][j] == 9) { x = i; y = j; }
 		}
 	}
 
-	cout << solve();
+	cout << solve(x, y);
 
 	return 0;
 }
