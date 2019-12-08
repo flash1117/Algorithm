@@ -1,112 +1,102 @@
 #include <iostream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
-int Gear[8][4];
-int pos[101], dir[101],K;
+int Gear[4][9]; // N = 0 , S = 1
+int K;
+vector <pair<int, int>>  vec;
+bool isMove[4];
 
-// N 극은 0, S는 1
+void moveGear(int index , int direction) {
 
-void moveGear(int position ,int direction) {
-	
-	int buf = Gear[0][position];
-	
-	if (direction == -1) { // 반시계 방향
-
-		Gear[0][position] = Gear[1][position];
-		Gear[1][position] = Gear[2][position];
-		Gear[2][position] = Gear[3][position];
-		Gear[3][position] = Gear[4][position];
-		Gear[4][position] = Gear[5][position];
-		Gear[5][position] = Gear[6][position];
-		Gear[6][position] = Gear[7][position];
-		Gear[7][position] = buf;
-
+	if (direction == -1) { // 반시계
+		int temp = Gear[index][0];
+		for (int i = 1; i < 8; i++) 
+			Gear[index][i-1] = Gear[index][i];
+		Gear[index][7] = temp;
 	}
-	else if (direction == 1) { // 시계 방향
-
-		Gear[0][position] = Gear[7][position];
-		Gear[7][position] = Gear[6][position];
-		Gear[6][position] = Gear[5][position];
-		Gear[5][position] = Gear[4][position];
-		Gear[4][position] = Gear[3][position];
-		Gear[3][position] = Gear[2][position];
-		Gear[2][position] = Gear[1][position];
-		Gear[1][position] = buf;
-
+	else { // 시계
+		int temp = Gear[index][7];
+		for (int i = 7; i >0; i--) {
+			Gear[index][i] = Gear[index][i - 1];
+		}
+		Gear[index][0] = temp;
 	}
-
-}
-
-bool stateCheck(int position, int dir) { // 주변 톱니바퀴 상태 체크
-	// 맞닿는 부분은 index 2, 6
-
-	if (position < 0 || position >3) return false;
-	if (dir == -1)
-		if (Gear[2][position] == Gear[6][position + 1]) return false;
-	else if (dir == 1)
-		if (Gear[6][position] == Gear[2][position - 1]) return false;
-	return true;
+	return;
 }
 
 int solve() {
+	// 2는 오른쪽 6은 왼쪽
+	for (int i = 0; i < vec.size(); i++) {
 
-	int sum = 0;
-	for (int i = 0; i < K; i++) {
+		for (int j = 0; j < 4; j++) // init
+			isMove[j] = false;
 
-		int cur = pos[i] - 1;
-		bool Left = stateCheck(cur - 1, -1);
-		bool Right = stateCheck(cur + 1, 1);
-		bool LLeft = false, RRight = false;
+		isMove[vec[i].first - 1] = true;
+		for (int j = vec[i].first - 2; j >= 0 && j < 3; j--) {
 
-		moveGear(cur, dir[i]); 
-		if (Left) {
-
-			LLeft = stateCheck(cur - 2, -1);
-			moveGear(cur - 1, -dir[i]);
-			if (LLeft) moveGear(cur - 2, dir[i]);
+			if (Gear[j][2] == Gear[j + 1][6]);
+			else {
+				if (isMove[j + 1]) isMove[j] = true;
+				else break;
+			}
+			
 		}
-		if (Right) {
+		for (int j = vec[i].first; j <= 3 && j >0; j++) {
 
-			RRight = stateCheck(cur + 2, 1);
-			moveGear(cur + 1, -dir[i]);
-			if (RRight) moveGear(cur + 2, dir[i]);
+			if (Gear[j][6] == Gear[j - 1][2]);
+			else {
+				if (isMove[j - 1]) isMove[j] = true;
+				else break;
+			}
 		}
 
+		int dir = vec[i].second;
+		for (int j = vec[i].first - 1; j <= 3; j++) {
+			if (isMove[j]) {
+				moveGear(j, dir);
+				dir *= -1;
+			}
+			else break;
+		}
+		dir = vec[i].second * (-1);
+		for (int j = vec[i].first - 2; j >= 0; j--) {
+			if (isMove[j]) {
+				moveGear(j, dir);
+				dir *= -1;
+			}
+			else break;
+		}
 	}
 
-	for (int j = 0; j < 4; j++) {
-
-		if (Gear[0][j] > 0) {
-			if (j == 0) sum += 1;
-			else if (j == 1) sum += 2;
-			else if (j == 2) sum += 4;
-			else if (j == 3) sum += 8;
-
-		}
+	int ret = 0;
+	int score = 1;
+	for (int i = 0; i < 4; i++) {
+		ret += Gear[i][0] * score;
+		score *= 2;
 	}
-	return sum;
+	return ret;
+
 }
-
 
 int main() {
 
 	string temp;
-
 	for (int i = 0; i < 4; i++) {
 		cin >> temp;
-		for (int j = 0; j < 8; j++) {
-			Gear[j][i] = temp[j] - '0';
-		
+		for (int j = 0; j < temp.length(); j++) {
+			Gear[i][j] = temp[j] - '0';
 		}
-			
 	}
-			
+
 	cin >> K;
-
-	for (int i = 0; i < K; i++)
-		cin >> pos[i] >> dir[i];
-
+	for (int i = 0; i < K; i++) {
+		int input1, input2;
+		cin >> input1 >> input2;
+		vec.push_back(make_pair(input1, input2));
+	}
 	cout << solve();
 	return 0;
 }

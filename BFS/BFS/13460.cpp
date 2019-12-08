@@ -1,120 +1,116 @@
 #include <iostream>
-#include <cstring>
 #include <queue>
-#include <vector>
 
 using namespace std;
 
-char map[11][11];
-bool visited[11][11];
 int N, M;
+char map[11][11];
+pair <int, int> dst, red, blue;
 
-int dx[] = { 0,0,-1,1 };
-int dy[] = { -1,1,0,0 };
-
-vector <pair<int, int>> Red, Blue, dst;
+int dx[] = { -1,0,1,0 };
+int dy[] = { 0,1,0,-1 };
 
 typedef struct {
-
 	int x, y, cnt;
 }pos;
 
 bool isBoundary(int x, int y) {
-
 	if (x<0 || y<0 || x>N - 1 || y>M - 1) return false;
 	return true;
-
 }
 
-void print() {
-	cout << endl;
-	for (int i = 1; i <= N - 2; i++) {
+bool getPos(int x , int y, int dir, int color) {
 
-		for (int j = 1; j <= M - 2; j++) {
-			cout << map[i][j];
-			
+	queue <pair<int, int>> q;
+	q.push(make_pair(x, y));
+
+	while (!q.empty()) {
+
+		pair<int, int> cur = q.front();
+		q.pop();
+
+		if (color == 1)
+		{
+			red.first = cur.first;
+			red.second = cur.second;
 		}
-		cout << endl;
-	}
+		else
+		{
+			blue.first = cur.first;
+			blue.second = cur.second;
+		}
+	
+		int nextX = cur.first + dx[dir];
+		int nextY = cur.second + dy[dir];
 
-}
+		if (isBoundary(nextX, nextY)) {
 
-int BFS() {
+			if (map[nextX][nextY] == 'O') return false;
+			else if (map[nextX][nextY] == '.') {
+				q.push(make_pair(nextX, nextY));
 
-	queue <pos> R, B;
-	R.push({ Red[0].first, Red[0].second, 0 });
-	B.push({ Blue[0].first, Blue[0].second, 0 });
-
-	while (!R.empty()) {
-
-		int rcurX = R.front().x;
-		int rcurY = R.front().y;
-		int rccnt = R.front().cnt;
-		int bcurX = B.front().x;
-		int bcurY = B.front().y;
-		int bccnt = B.front().cnt;
-		R.pop();
-		B.pop();
-
-		if (rcurX == dst.front().first && rcurY == dst.front().second)
-			return rccnt;
-		if (rccnt > 10) return -1;
-
-		for (int i = 0; i < 4; i++) {
-			int rnextX = rcurX + dx[i];
-			int rnextY = rcurY + dy[i];
-			int bnextX = bcurX + dx[i];
-			int bnextY = bcurY + dy[i];
-
-			if (isBoundary(rnextX, rnextY) && isBoundary(bnextX, bnextY)) {
-
-				while (1) {
-					int nextX = rnextX + dx[i];
-					int nextY = rnextY + dy[i];
-					if (map[nextX][nextY] == '.' && map[rnextX][rnextY] == '.') {
-						rnextX = nextX;
-						rnextY = nextY;
-					}
-					else if (map[nextX][nextY] == 'O' && map[rnextX][rnextY] == '.') {
-						rnextX = nextX;
-						rnextY = nextY;
-						R.push({ rnextX, rnextY, rccnt + 1 });
-					}
-					else if (map[nextX][nextY] == '#' && map[rnextX][rnextY] == '.') {
-						R.push({ rnextX, rnextY, rccnt + 1 });
-					}
-
-				}
-
-				
 			}
+			else;
+		}
+	}
 
+	return true;
+}
 
+int solve() {
+
+	queue <pos> r, b;
+	r.push({ red.first, red.second, 0 });
+	b.push({ blue.first, blue.second, 0 });
+
+	while (!r.empty && !b.empty()) {
+
+		int rX = r.front().x;
+		int rY = r.front().y;
+		int rcnt = r.front().cnt;
+
+		int bX = b.front().x;
+		int bY = b.front().y;
+		
+		if (rcnt > 10) break;
+
+		r.pop(); b.pop();
+		bool rState = false, bState = false;
+		for (int i = 0; i < 4; i++) {
+
+			rState = getPos(rX, rY, i, 1);
+			bState = getPos(bX, bY, i, 2);
+			if (rState && bState) {
+				r.push({ red.first, red.second, rcnt + 1 });
+				b.push({ blue.first, blue.second, rcnt + 1 });
+			}
+			else {
+				if (!rState) return rcnt + 1;
+			}
 		}
 
 	}
+	return -1;
 }
-
 
 int main() {
 
-	memset(visited, false, sizeof(visited));
 	cin >> N >> M;
 	for (int i = 0; i < N; i++) {
-
 		for (int j = 0; j < M; j++) {
-
 			cin >> map[i][j];
-			if (map[i][j] == 'R')
-				Red.push_back(make_pair(i, j));
-			else if (map[i][j] == 'B')
-				Blue.push_back(make_pair(i, j));
-			else if (map[i][j] == 'O')
-				dst.push_back(make_pair(i, j));
+			if (map[i][j] == 'R') {
+				red.first = i;
+				red.second = j;
+			}
+			else if (map[i][j] == 'B') {
+				blue.first = i;
+				blue.second = j;
+
+			}
 		}
 	}
 
-	int ret = BFS();
-	cout << ret;
+	cout << solve();
 	return 0;
 }

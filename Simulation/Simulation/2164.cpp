@@ -4,38 +4,35 @@
 using namespace std;
 
 int N;
-void BFS() {
+
+void solve() {
+
 	int cnt = 1;
 	queue <int> q;
-	for (int i = 1; i <= N; i++)
+	for (int i = 1; i <= N; i++) {
 		q.push(i);
+	}
 
-	while (!q.empty()) {
-
-		if (cnt % 2 == 1) 
-			q.pop();
+	while (1) {
+		if (q.size() == 1) {
+			cout << q.front() << "\n";
+			break;
+		}
 		else {
 			int cur = q.front();
 			q.pop();
-			q.push(cur);
-
+			if (cnt % 2 == 1);
+			else q.push(cur);
+			cnt++;
 		}
-
-		if (q.size() == 1) {
-			cout << q.front();
-			return;
-		}
-
-		cnt++;
 	}
-
-
+	return;
 }
 
 int main() {
 
 	cin >> N;
-	BFS();
+	solve();
 
 	return 0;
 }
