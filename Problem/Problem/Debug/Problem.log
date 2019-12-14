@@ -1,2 +1,6 @@
-﻿  11654.cpp
+﻿  dfs_test.cpp
+C:\Users\flash\Desktop\Algorithm\Problem\Problem\dfs_test.cpp(16,20): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\flash\Desktop\Algorithm\Problem\Problem\dfs_test.cpp(23,20): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\flash\Desktop\Algorithm\Problem\Problem\dfs_test.cpp(36,10): warning C4018:  '>': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\flash\Desktop\Algorithm\Problem\Problem\dfs_test.cpp(51,24): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
   Problem.vcxproj -> C:\Users\flash\Desktop\Algorithm\Problem\Debug\Problem.exe
