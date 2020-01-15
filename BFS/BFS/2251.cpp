@@ -1,50 +1,93 @@
 #include <iostream>
-#include <cstring>
+#include <vector>
 #include <queue>
 #include <algorithm>
 
 using namespace std;
-
+const int MAX = 200 + 1;
 int A, B, C;
 
-typedef struct {
+bool cache[MAX][MAX][MAX];
 
-	int x, y, z;
-}bottle;
+vector<int> BFS(void)
+{
 
-vector <int> ret;
-void BFS() {
+	queue < pair<pair<int, int>, int>> q; //A, B, C
+	q.push(make_pair(make_pair(0, 0), C));
+	vector<int> result;
 
-	queue <bottle> q;
-	q.push({ 0,0,C });
-
-	while (!q.empty()) {
-		bottle cur = q.front();
+	while (!q.empty())
+	{
+		int a = q.front().first.first;
+     	int b = q.front().first.second;
+		int c = q.front().second;
 		q.pop();
 
-		if(cur.z > 0)
-			ret.push_back(cur.z);
+		if (cache[a][b][c])
+			continue;
 
-		if (A + B > C) {
-			q.push({ A,C - A,0 });
+		cache[a][b][c] = true;
 
-		}
-		else { // A + B < C
+		if (a == 0) result.push_back(c);
 
+		//a->b
 
-		}
+		if (a + b > B) //넘치면 안되므로
+			q.push(make_pair(make_pair(a + b - B, B), c));
+		else
+			q.push(make_pair(make_pair(0, a + b), c));
 
+		//a->c
 
+		if (a + c > C)
+			q.push(make_pair(make_pair(a + b - C, b), C));
+		else
+			q.push(make_pair(make_pair(0, b), a + c));
 
+		//b->a
+
+		if (b + a > A)
+			q.push(make_pair(make_pair(A, b + a - A), c));
+		else
+			q.push(make_pair(make_pair(b + a, 0), c));
+
+		//b->c
+
+		if (b + c > C)
+			q.push(make_pair(make_pair(a, b + c - C), C));
+		else
+			q.push(make_pair(make_pair(a, 0), b + c));
+		//c->a
+
+		if (c + a > A)
+			q.push(make_pair(make_pair(A, b), c + a - A));
+		else
+			q.push(make_pair(make_pair(c + a, b), 0));
+
+		//c->b
+
+		if (c + b > B)
+			q.push(make_pair(make_pair(a, B), c + b - B));
+		else
+			q.push(make_pair(make_pair(a, c + b), 0));
 
 	}
-	
+
+	return result;
 
 }
 
-int main() {
-
+int main(void)
+{
 	cin >> A >> B >> C;
+	vector<int> result = BFS();
+
+	sort(result.begin(), result.end());
+
+	for (int i = 0; i < result.size(); i++)
+
+		cout << result[i] << endl;
 
 	return 0;
+
 }

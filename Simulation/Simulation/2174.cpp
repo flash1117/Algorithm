@@ -1,27 +1,37 @@
 #include <iostream>
-#include <queue>
 #include <vector>
 
 using namespace std;
 
 typedef struct {
-	int x, y, direction;
-}Robot;
+	int y, x;
+	char dir;
+}pos; // 로봇 좌표
 
-typedef struct {
-	int num;
-	char ev;
-	int cnt;
-}Command;
-vector <Robot> rob;
-vector <Command> vec;
-
-int map[101][101];
-
-int dx[] = { -1,0,1,0 }; // 북 동 남 서
-int dy[] = { 0,1,0,-1 }; // 시계 방향
+typedef struct{
+	int index; // 로봇 번호
+	char od; // 명령 R, L , F
+	int re; // 반복횟수
+}_order; // 명령
 
 int A, B, N, M;
+int map[101][101];
+
+int dx[] = { -1,0,1,0 }; // north , east, south, west
+int dy[] = { 0,1,0,-1 };
+
+vector <pos> robot;
+vector <_order> order;
+
+void print() {
+	cout << endl;
+	for (int i = 0; i < B; i++) {
+		for (int j = 0; j < A; j++) {
+			cout << map[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
 
 bool isBoundary(int x, int y) {
 
@@ -29,101 +39,98 @@ bool isBoundary(int x, int y) {
 	return true;
 }
 
-char chgDir(char curDir, char nextDir) {
+int convertDir(char dir) {
 
-	if (nextDir == 'L') {
-		if (curDir == 'N') return 'W';
-		else if (curDir == 'E') return 'N';
-		else if (curDir == 'S') return 'E';
-		else return 'S';
-	}
-	else if (nextDir == 'R') {
-		if (curDir == 'N') return 'E';
-		else if (curDir == 'E') return 'S';
-		else if (curDir == 'S') return 'W';
-		else return 'N';
-	}
-	
-}
-
-int setDir(char dir) {
 	if (dir == 'N') return 0;
 	else if (dir == 'E') return 1;
 	else if (dir == 'S') return 2;
-	else return 3;
+	else if (dir == 'W') return 3;
+
 }
 
-void solve() {
+char changeDir(char _od, char currentDir) {
 
-	queue <Robot> q;
-	
-	for (int i = 0; i < vec.size(); i++) {
+	if (_od == 'R') { // 현재 방향에서 오른쪽 방향으로 90도 만큼 회전
+		if (currentDir == 'N') return 'E';
+		else if (currentDir == 'E') return 'S';
+		else if (currentDir == 'S') return 'W';
+		else if (currentDir == 'W') return 'N';
+	}
+	else if (_od == 'L') {
+		if (currentDir == 'N') return 'W';
+		else if (currentDir == 'W') return 'S';
+		else if (currentDir == 'S') return 'E';
+		else if (currentDir == 'E') return 'N';
+	}
+}
 
-		if (!q.empty()) for (int i = 0; i < q.size(); i++) q.pop();	
-		q.push({ rob[vec[i].num].x, rob[vec[i].num].y, rob[vec[i].num].direction });
-		while (vec[i].cnt--) {
+bool solve() {
 
-			int curX = q.front().x;
-			int curY = q.front().y;
-			int dir = q.front().direction;
+	for (int i = 0; i < order.size(); i++) { // 명령의 갯수만큼
+		
+		int robot_index = order[i].index - 1; 
+		// input으로 들어오는 index는 1부터지만 vector로 이루어진 robot에는 index참조가 0부터 시작해서
+		char d = robot[robot_index].dir;
+		char moveOrder = order[i].od; // R , L , F 명령
+		int repeatCnt = order[i].re; // 명령 반복횟수
 
-			q.pop();
+		if(moveOrder == 'F') { // 전진
+			
+			int curX = robot[robot_index].x; // current X
+			int curY = robot[robot_index].y; // current Y
+			int cdir = convertDir(robot[robot_index].dir); // current direction
 
-			if (vec[i].ev == 'F') {
-				int mdir = setDir(dir);
-				int nextX = curX + dx[mdir];
-				int nextY = curY + dy[mdir];
+			for (int j = 0; j < repeatCnt; j++) {
 
-				if (isBoundary(nextX, nextY)) {
+				int nextX = curX + dx[cdir];
+				int nextY = curY + dy[cdir];
 
-					for (int j = 0; j < rob.size(); j++) {
-						if (j != vec[i].num && nextX == rob[j].x && nextY == rob[j].y)
-						{
-							cout << "Robot " << vec[i].num+1 << " crashes into robot " << j+1 <<"\n";
-							return;
-						}
-					}
-					q.push({ nextX, nextY, dir });
-					rob[vec[i].num].x = nextX;
-					rob[vec[i].num].y = nextY;
+				if (isBoundary(nextX, nextY) && map[nextX][nextY] != 0) { 
+					// 영역 안이지만 가고자 하는 map에 다른 index가 있는 경우
+					cout << "Robot " << robot_index+1 << " crashes into robot " << map[nextX][nextY] << "\n";
+					return false;
 				}
-				else {
-					cout << "Robot " << vec[i].num + 1 << " crashes into the wall\n";
-					return;
+				else if (!isBoundary(nextX, nextY)) { // 영역 밖으로 나갔을 때 -> 벽에 부딪힘
+					cout << "Robot " << robot_index+1 << " crashes into the wall\n";
+					return false;
 				}
-				
-			}
-			else {
-				dir = chgDir(dir, vec[i].ev);
-				q.push({ curX, curY, dir });
-				rob[vec[i].num].direction = dir;
+				else if(map[nextX][nextY] == 0 && isBoundary(nextX, nextY)) {
+					map[nextX][nextY] = map[curX][curY]; // 칸 이동
+					map[curX][curY] = 0; // 전에 있던 칸 비우기
+					curX = nextX; curY = nextY; // curreent position update
+				}
 			}
 
 		}
+		else { // R이나 L 명령
+			for (int j = 0; j < repeatCnt; j++) { // 반복명령 횟수만큼
+				d = changeDir(moveOrder, d); // 현재 direction을 명령에 따라 회전
+			}
+			robot[robot_index].dir = d; // 반복 명령횟수만큼 달라진 direction을 update
+		}
 	}
-
-	cout << "OK\n";
-	return;
+	return true; // 성공적으로 종료
 }
 
 int main() {
-	int input1, input2;
-	char d;
 
-	cin >> A >> B;
-	cin >> N >> M;
-	for (int i = 0; i < N; i++) {
-		cin >> input1 >> input2 >> d;
-		input1 -= 1;
-		input2 = B - input2;
-		rob.push_back({ input2, input1, chgDir(d,'R') });
+	cin >> A >> B; // B가 행, A가 열
+	cin >> N >> M; 
+	for (int i = 1; i <= N; i++) { // N 만큼 로봇을 입력받음
+		pos input;
+		cin >> input.y >> input.x >> input.dir;
+		input.y--;  // (0,0) 부터 시작하기 위해서
+		input.x = B - input.x;
+		robot.push_back(input);
+		map[input.x][input.y] = i;
 	}
-	for (int i = 0; i < M; i++) {
-		cin >> input1 >> d >> input2;
-		vec.push_back({ input1-1, d, input2 });
+	for (int i = 0; i < M; i++) { // M만큼 명령을 입력받음
+		_order input;
+		cin >> input.index >> input.od >> input.re;
+		order.push_back(input);
 	}
 
-	solve();
-
+	if (solve()) cout << "OK\n"; // return true
+	
 	return 0;
 }

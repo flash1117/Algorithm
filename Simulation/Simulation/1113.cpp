@@ -18,7 +18,7 @@ int solve(int x, int y) {
 	queue <pair<int, int>> q;
 	
 	int water = 0;
-	
+	q.push({ 1,2 });
 	
 
 	return water;

@@ -1,116 +1,217 @@
 #include <iostream>
 #include <queue>
-
 using namespace std;
 
-int N, M;
-char map[11][11];
-pair <int, int> dst, red, blue;
-
-int dx[] = { -1,0,1,0 };
-int dy[] = { 0,1,0,-1 };
-
 typedef struct {
-	int x, y, cnt;
+	int x, y, dir, cnt;
 }pos;
 
-bool isBoundary(int x, int y) {
-	if (x<0 || y<0 || x>N - 1 || y>M - 1) return false;
-	return true;
+pair<int, int> sttRed, sttBlue;
+int N, M;
+char map[10][10];
+
+bool redballFirst(int nextDir, int x, int y) {
+	
+	if (nextDir == 0) { // west
+		for (int i = 0; i < M; i++) {
+			if (map[x][i] == 'R') return true;
+			else if (map[x][i] == 'B') return false;
+		}
+	}
+	else if (nextDir == 1) { // east
+		for (int i = M-1; i >=0; i--) {
+			if (map[x][i] == 'R') return true;
+			else if (map[x][i] == 'B') return false;
+		}
+	}
+	else if (nextDir == 2) { // north
+		for (int i = 0; i < N; i++) {
+			if (map[i][y] == 'R') return true;
+			else if (map[i][y] == 'B') return false;
+		}
+	}
+	else { // south
+		for (int i = N-1; i >= 0; i--) {
+			if (map[i][y] == 'R') return true;
+			else if (map[i][y] == 'B') return false;
+		}
+	}
 }
 
-bool getPos(int x , int y, int dir, int color) {
-
-	queue <pair<int, int>> q;
-	q.push(make_pair(x, y));
-
-	while (!q.empty()) {
-
-		pair<int, int> cur = q.front();
-		q.pop();
-
-		if (color == 1)
-		{
-			red.first = cur.first;
-			red.second = cur.second;
-		}
-		else
-		{
-			blue.first = cur.first;
-			blue.second = cur.second;
-		}
-	
-		int nextX = cur.first + dx[dir];
-		int nextY = cur.second + dy[dir];
-
-		if (isBoundary(nextX, nextY)) {
-
-			if (map[nextX][nextY] == 'O') return false;
-			else if (map[nextX][nextY] == '.') {
-				q.push(make_pair(nextX, nextY));
-
+pair<int,int> move(int ballX, int ballY, int dir) {
+	if (dir == 0) {
+		for (int i = 1; i < M; i++) {
+		
+			if (map[ballX][ballY - i] != '.' && map[ballX][ballY-i] != 'O') {
+				char temp = map[ballX][ballY - i + 1];
+				map[ballX][ballY - i + 1] = map[ballX][ballY];
+				map[ballX][ballY] = temp;
+				
+				return make_pair(ballX, ballY - i + 1);
 			}
-			else;
+			else if (map[ballX][ballY - i] == 'O') {
+				return make_pair(ballX, ballY - i);
+			}
+		}
+	}
+	else if (dir == 1) {
+
+		for (int i = 1; i < M; i++) {
+			if (map[ballX][ballY + i] != '.' && map[ballX][ballY+i] != 'O') {
+				char temp = map[ballX][ballY + i - 1];
+				map[ballX][ballY + i - 1] = map[ballX][ballY];
+				map[ballX][ballY] = temp;
+				
+				return make_pair(ballX, ballY + i - 1);
+			}
+			else if (map[ballX][ballY + i] == 'O') {
+				return make_pair(ballX, ballY + i);
+			}
+		}
+
+	}
+	else if (dir == 2) {
+
+		for (int i = 1; i < N; i++) {
+			if (map[ballX - i][ballY] != '.' && map[ballX-i][ballY] != 'O') {
+				char temp = map[ballX - i + 1][ballY];
+				map[ballX - i+1][ballY] = map[ballX][ballY];
+				map[ballX][ballY] = temp;
+				return make_pair(ballX - i + 1, ballY);
+			}
+			else if (map[ballX - i][ballY] == 'O') {
+				return make_pair(ballX - i, ballY);
+			}
+		}
+	}
+	else if (dir == 3) {
+
+		for (int i = 1; i < N; i++) {
+			if (map[ballX + i][ballY] != '.' && map[ballX+i][ballY] != 'O') {
+				char temp = map[ballX + i - 1][ballY];
+				map[ballX + i - 1][ballY] = map[ballX][ballY];
+				map[ballX][ballY] = temp;
+				return  make_pair(ballX + i - 1, ballY);
+			}
+			else if (map[ballX + i][ballY] == 'O') {
+				return make_pair(ballX + i, ballY);
+			}
 		}
 	}
 
-	return true;
 }
 
 int solve() {
 
-	queue <pos> r, b;
-	r.push({ red.first, red.second, 0 });
-	b.push({ blue.first, blue.second, 0 });
+	queue <pos> r; queue <pos> b;
+	r.push({ sttRed.first , sttRed.second, 0, 0 });
+	b.push({ sttBlue.first, sttBlue.second, 0, 0 });
 
-	while (!r.empty && !b.empty()) {
+	while (r.front().cnt <= 10) {
 
-		int rX = r.front().x;
-		int rY = r.front().y;
-		int rcnt = r.front().cnt;
-
-		int bX = b.front().x;
-		int bY = b.front().y;
-		
-		if (rcnt > 10) break;
+		int rcurX = r.front().x;
+		int rcurY = r.front().y;
+		int bcurX = b.front().x;
+		int bcurY = b.front().y;
+		int dir = r.front().dir;
+		int cnt = r.front().cnt;
 
 		r.pop(); b.pop();
-		bool rState = false, bState = false;
-		for (int i = 0; i < 4; i++) {
 
-			rState = getPos(rX, rY, i, 1);
-			bState = getPos(bX, bY, i, 2);
-			if (rState && bState) {
-				r.push({ red.first, red.second, rcnt + 1 });
-				b.push({ blue.first, blue.second, rcnt + 1 });
+		if (map[rcurX][rcurY] == 'O') return cnt;
+
+		for (int i = 0; i < 4; i++) {
+			if (cnt > 0 && (dir == i || (dir == 0 && i == 1) || (dir==1 && i==0) 
+				|| (dir==2 && i==3) || (dir==3 && i ==2) )) continue;
+			
+			map[rcurX][rcurY] = 'R';
+			map[bcurX][bcurY] = 'B';
+
+			pair<int, int> pr; pair<int, int> pb;
+
+			if (redballFirst(i, rcurX, rcurY)) {
+
+				pr = move(rcurX, rcurY, i);
+				if (map[pr.first][pr.second] == 'O')
+					map[rcurX][rcurY] = '.';
+				pb = move(bcurX, bcurY, i);
+				
+				if (map[pr.first][pr.second] != 'O' && map[pb.first][pb.second] =='O') { // ÆÄ
+					map[pr.first][pr.second] = '.';
+					map[bcurX][bcurY] = '.';
+					continue;
+				}
+				else if (map[pr.first][pr.second] == 'O' && map[pb.first][pb.second] == 'O') { // »¡ , ÆÄ 
+					map[bcurX][bcurY] = '.';
+					continue;
+				} 
+				else if(map[pr.first][pr.second] == 'O' && map[pb.first][pb.second] != 'O') { // »¡
+					map[pb.first][pb.second] = '.';
+				}
+				else { // µÑ´Ù µé¾î°¡Áö ¾ÊÀ½
+					map[pr.first][pr.second] = '.';
+					map[pb.first][pb.second] = '.';
+					
+				}
+				
+				r.push({ pr.first, pr.second, i,  cnt + 1 });
+				b.push({ pb.first, pb.second, i , cnt + 1 });
+			
 			}
 			else {
-				if (!rState) return rcnt + 1;
+				pb = move(bcurX, bcurY, i);
+				if (map[pb.first][pb.second] == 'O') { // ÆÄ
+					map[bcurX][bcurY] = '.';
+					map[rcurX][rcurY] = '.';
+					continue;
+				}
+				pr = move(rcurX, rcurY, i);
+
+				if (map[pr.first][pr.second] == 'O' && map[pb.first][pb.second] != 'O') { // »¡
+					map[rcurX][rcurY] = '.';
+					map[pb.first][pb.second] = '.';
+				}
+				else {
+					map[pr.first][pr.second] = '.';
+					map[pb.first][pb.second] = '.';
+				}
+				r.push({ pr.first, pr.second, i,  cnt + 1 });
+				b.push({ pb.first, pb.second, i , cnt + 1 });
+				
 			}
+
 		}
 
 	}
+
 	return -1;
 }
 
-int main() {
 
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	string input;
 	cin >> N >> M;
+
 	for (int i = 0; i < N; i++) {
+		cin >> input;
 		for (int j = 0; j < M; j++) {
-			cin >> map[i][j];
+			map[i][j] = input[j];
 			if (map[i][j] == 'R') {
-				red.first = i;
-				red.second = j;
+				sttRed.first = i;
+				sttRed.second = j;
+				map[i][j] = '.';
 			}
 			else if (map[i][j] == 'B') {
-				blue.first = i;
-				blue.second = j;
-
+				sttBlue.first = i;
+				sttBlue.second = j;
+				map[i][j] = '.';
 			}
 		}
 	}
 
-	cout << solve();
+	cout << solve() << "\n";
+
 	return 0;
 }

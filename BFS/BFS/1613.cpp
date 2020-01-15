@@ -2,45 +2,49 @@
 
 using namespace std;
 
+int n, k;
 int map[401][401];
-int n, k, s;
 
 void solve() {
 
-	for (int mid = 1; mid <= n; mid++) {
+	for (int i = 1; i <= n; i++) {
 
-		for (int i = 1; i <= n; i++) {
-			for (int j = 1; j <= n; j++) {
-				if (map[i][mid] == 1 && map[mid][j] == 1)
-					map[i][j] = 1, map[j][i] = -1;
-			
+		for (int j = 1; j <= n; j++) {
+
+			for (int k = 1; k <= n; k++) {
+				if (map[j][i] == 1 && map[i][k] == 1) map[j][k] = 1;
+
 			}
 		}
 	}
-
 }
 
 int main() {
 
-	int input1, input2;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	pair <int, int> input;
 
 	cin >> n >> k;
+
 	for (int i = 0; i < k; i++) {
-
-		cin >> input1 >> input2;
-		map[input1][input2] = -1;
-		map[input2][input1] = 1;
-
+		cin >> input.first >> input.second;
+		map[input.first][input.second] = 1;
 	}
 
 	solve();
+	
+	int s;
 	cin >> s;
 	for (int i = 0; i < s; i++) {
-
-		cin >> input1 >> input2;
-		cout << map[input1][input2] << endl;
+		cin >> input.first >> input.second;
+		if (map[input.first][input.second] == 0 && map[input.second][input.first] == 0)
+			cout << 0 << "\n";
+		else if (map[input.first][input.second] == 0 && map[input.second][input.first] == 1)
+			cout << 1 << "\n";
+		else if (map[input.first][input.second] == 1) cout << -1 << "\n";
+	
 	}
-
 
 	return 0;
 }
