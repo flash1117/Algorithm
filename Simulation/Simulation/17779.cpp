@@ -24,6 +24,12 @@ bool setBound(Bound input) {
 	return true;
 }
 
+void solve() {
+
+
+
+}
+
 int main() {
 
 	cin >> N;
@@ -43,6 +49,8 @@ int main() {
 					if (isBound) Area.push_back(input);
 				}
 			}
+
+
 
 		}
 	}
