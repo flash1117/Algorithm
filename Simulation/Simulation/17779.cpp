@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -7,8 +8,8 @@ typedef struct {
 	int x, y, d1, d2;
 }Bound;
 
-int N;
-int map[20][20];
+int N, ret = 40001, peopleCnt;
+int map[21][21];
 vector <Bound> Area;
 
 bool isBoundary(int x, int y) {
@@ -25,8 +26,37 @@ bool setBound(Bound input) {
 }
 
 void solve() {
+	for (int k = 0; k<Area.size(); k++) {
+		int pNum[5] = { 0,0,0,0,0 };
+		for (int i = 0; i < Area[k].x + Area[k].d1 - 1; i++) { // area 1
+			for (int j = 0; j < Area[k].y; j++) {
+				pNum[0] += map[i][j];
+			}
+		}
 
+		for (int i = 0; i < Area[k].x + Area[k].d1 - 1; i++) { // area 2
+			for (int j = Area[k].y; j < N; j++) {
+				pNum[1] += map[i][j];
+			}
+		}
 
+		for (int i = Area[k].x + Area[k].d1 - 1; i < N; i++) {
+			for (int j = 0; j < Area[k].y; j++) {
+				pNum[2] += map[i][j];
+			}
+		}
+
+		for (int i = Area[k].x + Area[k].d1 - 1; i < N; i++) {
+			for (int j = Area[k].y; j < N; j++) {
+				pNum[3] += map[i][j];
+			}
+		}
+
+		pNum[4] = peopleCnt - pNum[0] - pNum[1] - pNum[2] - pNum[3];
+		sort(pNum, pNum+4);
+		int dif = pNum[0] - pNum[4];
+		ret = ret > dif ? dif : ret;
+	}
 
 }
 
@@ -36,6 +66,7 @@ int main() {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			cin >> map[i][j];
+			peopleCnt += map[i][j];
 		}
 	}
 
@@ -49,12 +80,10 @@ int main() {
 					if (isBound) Area.push_back(input);
 				}
 			}
-
-
-
 		}
 	}
-
+	solve();
+	cout << ret << "\n";
 
 	return 0;
 }
