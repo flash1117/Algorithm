@@ -33,26 +33,31 @@ void solve() {
 				pNum[0] += map[i][j];
 			}
 		}
+		if (pNum[0] == 0) continue;
 
 		for (int i = 0; i < Area[k].x + Area[k].d1 - 1; i++) { // area 2
 			for (int j = Area[k].y; j < N; j++) {
 				pNum[1] += map[i][j];
 			}
 		}
+		if (pNum[1] == 0) continue;
 
 		for (int i = Area[k].x + Area[k].d1 - 1; i < N; i++) {
 			for (int j = 0; j < Area[k].y; j++) {
 				pNum[2] += map[i][j];
 			}
 		}
+		if (pNum[2] == 0) continue;
 
 		for (int i = Area[k].x + Area[k].d1 - 1; i < N; i++) {
 			for (int j = Area[k].y; j < N; j++) {
 				pNum[3] += map[i][j];
 			}
 		}
+		if (pNum[3] == 0) continue;
 
 		pNum[4] = peopleCnt - pNum[0] - pNum[1] - pNum[2] - pNum[3];
+		if (pNum[4] == 0) continue;
 		sort(pNum, pNum+4);
 		int dif = pNum[0] - pNum[4];
 		ret = ret > dif ? dif : ret;
