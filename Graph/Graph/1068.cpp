@@ -11,10 +11,12 @@ int solve() {
 
 	queue <int> q;
 	int cnt = 0;
-	if (vec[root].empty() || (vec[root].size() == 1 && vec[root][0] == delNode)) cnt++;
 	for (int i = 0; i < vec[root].size(); i++) {
 		
-		if (vec[root][i] != delNode) q.push(vec[root][i]);
+		if (vec[root][i] != delNode) {
+			q.push(vec[root][i]);
+		}
+		else if (vec[root][i] == delNode && vec[root].size() == 1) cnt++;
 	}
 
 	while (!q.empty()) {
@@ -30,6 +32,7 @@ int solve() {
 		for (int i = 0; i < vec[cur].size(); i++) {
 			
 			if (vec[cur][i] != delNode) q.push(vec[cur][i]);
+			else if (vec[cur][i] == delNode && vec[cur].size() == 1) cnt++;
 			
 		}
 	}
