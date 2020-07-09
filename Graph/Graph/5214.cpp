@@ -8,7 +8,7 @@ const int hTubeSize = 100000 + 1001;
 
 int n, k, m;
 vector<int> hTube[hTubeSize];
-int d[100001];
+int d[hTubeSize];
 
 int solve() {
 
@@ -29,6 +29,9 @@ int solve() {
 
 			// htube 번호 참조
 			int nextHTube = hTube[cur][i];
+			if (d[nextHTube] > 0) continue;
+			else d[nextHTube] = 1;
+
 			for (int j = 0; j < hTube[nextHTube].size(); j++) {
 
 				if (d[hTube[nextHTube][j]] == 0) {

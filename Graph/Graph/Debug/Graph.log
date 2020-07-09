@@ -1,4 +1,4 @@
 ﻿  5214.cpp
 C:\Users\flash\Desktop\Algorithm\Graph\Graph\5214.cpp(28,21): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\flash\Desktop\Algorithm\Graph\Graph\5214.cpp(32,22): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\flash\Desktop\Algorithm\Graph\Graph\5214.cpp(35,22): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
   Graph.vcxproj -> C:\Users\flash\Desktop\Algorithm\Graph\Debug\Graph.exe
