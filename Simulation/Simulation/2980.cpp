@@ -1,73 +1,38 @@
 #include <iostream>
 #include <vector>
-#include <queue>
-#include <cmath>
 
 using namespace std;
 
-typedef struct {
+
+int n, l;
+typedef struct
+{
 	int D, R, G;
-}Traffic;
+}Pos;
+vector <Pos> vec;
 
-typedef struct {
-	int c, time, index;
-}People;
+void solve() {
 
-int N, L;
-vector <Traffic> Light;
+	int index = 0;
+	int cnt = 0;
+	while (index != l) {
 
 
-int solve() {
-
-	queue <People> q;
-	q.push({ 0,0,0 });
-	int time = 0;
-
-	while (!q.empty()) {
-
-		int cur = q.front().c;
-		time = q.front().time;
-		int index = q.front().index;
-
-		cout << cur << " " << time << endl;
-
-		q.pop();
-		if (cur == L) return time;
-		if (index == Light.size()) continue;
-
-		if (cur == Light[index].D) {
-			if ((time % (Light[index].G + Light[index].R)) - Light[index].R <= 0) {
-				time += abs((Light[index].G + Light[index].R) - Light[index].R);
-				cur++;
-				time++;
-				index++;
-			}
-			else {
-				time++;
-				cur++;
-				index++;
-			}
-			q.push({ cur,time,index });
-		}
-		else {
-			cur++;
-			time++;
-			q.push({ cur,time,index });
-		}
 
 	}
-	return time;
+
 }
+
 int main() {
 
-	int d, r, g;
-	cin >> N >> L;
-
-	for (int i = 0; i < N; i++) {
-		cin >> d >> r >> g;
-		Light.push_back({ d,r,g });
+	Pos input;
+	cin >> n >> l;
+	for (int i = 0; i < n; i++) {
+		cin >> input.D >> input.R >> input.G;
+		vec.push_back(input);
 	}
 
-	cout << solve() << "\n";
+	solve();
+
 	return 0;
 }

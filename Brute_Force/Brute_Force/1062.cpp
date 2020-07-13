@@ -6,7 +6,6 @@ using namespace std;
 int n, k, maxRead;
 int pick[27];
 vector <string> _word;
-char alphabet[27];
 
 void teachLanguage(int depth, int cnt) {
 
@@ -49,6 +48,9 @@ void teachLanguage(int depth, int cnt) {
 
 int main() {
 
+	ios::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+
 	string input;
 	cin >> n >> k;
 	for (int i = 0; i < n; i++) {
@@ -56,9 +58,6 @@ int main() {
 		_word.push_back(input);
 	}
 
-	for (int i = 0; i <= 'z' - 'a'; i++) {
-		alphabet[i] = 'a' + i;
-	}
 
 	pick[0] = 0;
 	pick[1] = 2;
