@@ -1,84 +1,69 @@
 #include <iostream>
 #include <vector>
-#include <cstring>
+#include <queue>
 #include <algorithm>
 
 using namespace std;
 
 int N;
-vector <int> vec;
+int parent[101];
+int child[101];
 bool visited[101];
-int start;
-
-vector <int> process;
 vector <int> ret;
-void DFS(int x)
-{
-	if (visited[x] && x != start) {
 
-		for (int i = 1; i < process.size(); i++) {
-			if(process[i] != start)
-				visited[process[i]] = false;
+void isUnion(int src, int dst) {
+
+	bool cycle[101];
+	for (int i = 1; i <= N; i++) cycle[i] = false;
+	vector<int> footPrint;
+	queue <int> q;
+	q.push(src);
+	footPrint.push_back(src);
+	cycle[src] = true;
+
+	while (!q.empty()) {
+
+		int cur = q.front();
+		q.pop();
+
+		int next = child[cur];
+
+		if (next == src) {
+			for (int i = 0; i < footPrint.size(); i++) {
+				visited[footPrint[i]] = true;
+				ret.push_back(footPrint[i]);
+			}
 		}
-		return;
-	}
-	if (x == vec[x - 1] && !visited[x] && x== start) {
-		ret.push_back(x);
-		return;
-	}
-		
-	if (!visited[x])
-		process.push_back(x);
-	
-	visited[x] = true;
 
-	if (vec[x - 1] == start) {
-		for (int i = 0; i < process.size(); i++) {
-			ret.push_back(process[i]);
+		if (!cycle[next]) {
+			q.push(next);
+			cycle[next] = true;
 		}
-			
-		
-		return;
 	}
-
-	DFS(vec[x - 1]);
-
 }
 
-void Init() {
-
-	for (int i = 0; i < process.size(); i++)
-		process.pop_back();
-
-}
 
 int main() {
 
-	memset(visited, false, sizeof(visited));
-	int input;
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+
 	cin >> N;
-
-	for (int i = 0; i < N; i++) {
+	for (int i = 1; i <= N; i++) parent[i] = i;
+	for (int i = 1; i <= N; i++) {
+		int input;
 		cin >> input;
-		vec.push_back(input);
-
+		child[i] = input;
 	}
 
 	for (int i = 1; i <= N; i++) {
-		if (!visited[i]) {
-			start = i;
-			DFS(i);
-			Init();
-		}
-			
-
+		if (!visited[i]) isUnion(i, child[i]);
 	}
-	
-	cout << endl << ret.size() << endl;
 
 	sort(ret.begin(), ret.end());
+	cout << ret.size() << "\n";
+	for (int i = 0; i < ret.size(); i++) cout << ret[i] << "\n";
 
-	for (int i = 0; i < ret.size(); i++)
-		cout << ret[i] << endl;
 	return 0;
 }
