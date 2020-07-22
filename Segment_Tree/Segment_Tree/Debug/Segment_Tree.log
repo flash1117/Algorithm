@@ -1,3 +1,5 @@
-﻿  11505.cpp
-C:\Users\flash\Desktop\Algorithm\Segment_Tree\Segment_Tree\11505.cpp(23,20): warning C4244:  '*=': 'double'에서 'll'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿  1275.cpp
+C:\Users\flash\Desktop\Algorithm\Segment_Tree\Segment_Tree\1275.cpp(69,27): warning C4244:  '인수': 'll'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\flash\Desktop\Algorithm\Segment_Tree\Segment_Tree\1275.cpp(69,24): warning C4244:  '인수': 'll'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\flash\Desktop\Algorithm\Segment_Tree\Segment_Tree\1275.cpp(73,19): warning C4244:  '인수': 'll'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   Segment_Tree.vcxproj -> C:\Users\flash\Desktop\Algorithm\Segment_Tree\Debug\Segment_Tree.exe
