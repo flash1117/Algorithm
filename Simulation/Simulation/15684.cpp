@@ -7,7 +7,6 @@ const int INF = 987654321;
 int N, M, H;
 int map[31][31];
 int minCnt = INF;
-
 void print() {
 	cout << "\n";
 	for (int i = 1; i <= N; i++) {
@@ -19,19 +18,19 @@ void print() {
 }
 
 int ladderClimb(int index) {
-	int cur = index;
+
 	for (int i = 1; i <= H; i++) {
-		if (map[i][cur] == 1) cur++;
-		else if (map[i][cur-1] == 1) cur--;
+		if (map[i][index] == 1) index++;
+		else if (map[i][index] == -1) index--;
 	}
 
-	return cur;
+	return index;
 }
- 
+
 
 void setLadder(int index, int cnt) {
 	if (cnt >= 4) return;
-//	print();
+	//	print();
 	bool isAnswer = true;
 	for (int i = 1; i <= N; i++) {
 		if (i == ladderClimb(i));
@@ -43,29 +42,31 @@ void setLadder(int index, int cnt) {
 	if (isAnswer) {
 		minCnt = minCnt > cnt ? cnt : minCnt;
 		return;
-	} 
+	}
+
 
 	for (int j = index; j <= H; j++) {
 		for (int i = 1; i < N; i++) {
 
-			if (map[j][i-1] ==0 && map[j][i] == 0 && map[j][i + 1] == 0) {
+			if (map[j][i] == 0 && map[j][i + 1] == 0) {
 
 				map[j][i] = 1;
+				map[j][i + 1] = -1;
 				setLadder(j, cnt + 1);
 				map[j][i] = 0;
+				map[j][i + 1] = 0;
 			}
 
 		}
 	}
+
+
 
 	return;
 }
 
 
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
 
 	cin >> N >> M >> H;
 
@@ -73,16 +74,19 @@ int main() {
 		int x, y;
 		cin >> x >> y;
 		map[x][y] = 1;
+		map[x][y + 1] = -1;
 
 	}
 
 
-	setLadder(1,0);
+	setLadder(1, 0);
 
 	if (minCnt == INF) {
 		cout << -1 << "\n";
 	}
 	else cout << minCnt << "\n";
-		
+
+
+
 	return 0;
 }
