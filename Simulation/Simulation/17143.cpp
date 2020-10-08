@@ -4,178 +4,159 @@
 using namespace std;
 
 typedef struct {
+	int r, c, s, d, z;
+}Shark;
 
-	int r, c, s, d, z; // x, y, 속력, 이동방향, 크기
-}shark;
-
-int map[101][101];
 int R, C, M;
-vector<shark> sh[10001];
+int dx[] = { 0,-1,1,0,0 };
+int dy[] = { 0,0,0,1,-1 };
+int map[101][101];
+vector<Shark> sh[10001];
+vector<int> sharkQueue;
+
+void initMap() {
+
+	for (int i = 1; i <= R; i++) {
+		for (int j = 1; j <= C; j++) {
+			map[i][j] = 0;
+		}
+	}
+	return;
+}
+
 
 void print() {
 	cout << endl;
 	for (int i = 1; i <= R; i++) {
-
 		for (int j = 1; j <= C; j++) {
-
 			cout << map[i][j] << " ";
 		}
 		cout << endl;
 	}
-
-
 }
 
-int getShark(int people_index) {
-	int sharkSize = 0;
+void sharkMove() {
+	vector<Shark> vec;
 
-	for (int i = 1; i <= R; i++) {
+	for (int i = 0; i < sharkQueue.size(); i++) {
 
-		if (map[i][people_index] != 0) {
-			sharkSize = sh[map[i][people_index]][0].z;
-			sh[map[i][people_index]].pop_back();
-			map[i][people_index] = 0;
-			break;
-		}
-	}
-	return sharkSize;
-}
+		int curShark = sharkQueue[i];
+		if (sh[curShark][0].r == 0) continue;
 
-int chgDir(int currentDir) {
-
-	if (currentDir == 0) return 1;
-	else if (currentDir == 1) return 0;
-	else if (currentDir == 2) return 3;
-	else if (currentDir == 3) return 2;
-}
-
-shark chgPos(shark temp) {
-	map[temp.r][temp.c] = 0;
-
-	if (temp.d == 0) { // 위쪽
-		int temp_s = temp.s % (2*(R-1));
-
-		if (temp_s < temp.r) temp.r -= temp_s;
-		else {
-			temp_s -= temp.r - 1;
-
-			if (temp_s > R - 1) {
-				temp_s -= R - 1;
-				temp.r = R - temp_s;
-			}
-			else {
-				temp.r = 1 + temp_s;
-				temp.d = chgDir(temp.d);
-			}
-			
-		}
-	}
-	else if (temp.d == 1) { // 아래
-		int temp_s = temp.s % (2 * (R - 1));
-
-		if (temp_s <= R - temp.r) temp.r += temp_s;
-		else {
-
-			temp_s -= R - temp.r;
-
-			if (temp_s > R - 1) {
-				temp_s -= R - 1;
-				temp.r = 1 + temp_s;
-			}
-			else {
-				temp.r = R - temp_s;
-				temp.d = chgDir(temp.d);
-			}
-			
-		}
-	}
-	else if (temp.d == 2) { // 오른쪽
-
-		int temp_s = temp.s % (2 * (C - 1));
-		if (temp.s <= C - temp.c) temp.c += temp.s;
-		else {
-
-			temp_s -= C - temp.c;
-			if (temp_s > C - 1) {
-				temp_s -= C - 1;
-				temp.c = 1 + temp_s;
-			}
-			else {
-				temp.c = C - temp_s;
-				temp.d = chgDir(temp.d);
-			}
+		int curX = sh[curShark][0].r;
+		int curY = sh[curShark][0].c;
+		int dir = sh[curShark][0].d;
+		int speed = sh[curShark][0].s;
+		map[curX][curY] = 0;
 		
-		}
-	}
-	else { // currentDir = 3 , 왼쪽
-		int temp_s = temp.s % (2 * (C - 1));
+		if (dir == 1 || dir == 2) {
+			int nextX = curX;
+			speed %= 2 * (R-1);
+			while (speed--) {
 
-		if (temp.s < temp.c) temp.c -= temp.s;
+				nextX += dx[dir];
+				if (nextX == 0) {
+					nextX = 2;
+					dir = 2;
+					
+				}
+				else if (nextX == R + 1) {
+					nextX = R - 1;
+					dir = 1;
+				}
+				
+			}
+
+
+			vec.push_back({ nextX, curY, sh[curShark][0].s , dir, sh[curShark][0].z });
+		}
 		else {
-			temp_s -= temp.c - 1;
-			if (temp_s > C - 1) {
-				temp_s -= C - 1;
-				temp.c = C - temp_s;
+
+			int nextY = curY;
+			speed %= 2 * (C-1);
+			while (speed--) {
+
+				nextY += dy[dir];
+				if (nextY == 0) {
+					nextY = 2;
+					dir = 3;
+
+				}
+				else if (nextY == C + 1) {
+					nextY = C - 1;
+					dir = 4;
+				}
+
+			}
+			vec.push_back({ curX, nextY, sh[curShark][0].s , dir, sh[curShark][0].z });
+		}
+
+
+	}
+
+	for (int i = 0; i < vec.size(); i++) {
+
+		sh[vec[i].z][0] = { vec[i].r, vec[i].c, vec[i].s, vec[i].d, vec[i].z };
+
+		if (map[vec[i].r][vec[i].c] == 0) {
+			map[vec[i].r][vec[i].c] = vec[i].z;
+		}
+		else {
+
+			if (map[vec[i].r][vec[i].c] > vec[i].z) {
+
+				sh[vec[i].z][0] = { 0,0,0,0,0 };
 			}
 			else {
-				temp.c = 1 + temp_s;
-				temp.d = chgDir(temp.d);
+
+				sh[map[vec[i].r][vec[i].c]][0] = { 0,0,0,0,0 };
+				map[vec[i].r][vec[i].c] = vec[i].z;
 			}
 		}
 	}
-
-	return temp;
+	return;
 }
 
-int solve() {
 
-	int ret = 0;
-	for (int i = 1; i <= C; i++) {
+int getShark() {
+	int sum = 0;
+	for (int j = 1; j <= C; j++) {
 
-		ret += getShark(i);
-		for (int j = 1; j <= M; j++) {
+		for (int i = 1; i <= R; i++) {
 
-			if (!sh[j].empty()) {
-				sh[j][0] = chgPos(sh[j][0]);
+			if (map[i][j] != 0) {
+				sh[map[i][j]][0] = { 0,0,0,0,0 };
+				sum += map[i][j];
+				map[i][j] = 0;
+				break;
 			}
+
 		}
-		print();
-		for (int j = 1; j <= M; j++) {
-			if (!sh[j].empty()) {
-				if (map[sh[j][0].r][sh[j][0].c] != 0) {
-					if (sh[map[sh[j][0].r][sh[j][0].c]][0].z > sh[j][0].z) {
-						sh[j].pop_back();
-					}
-					else {
-						
-						sh[map[sh[j][0].r][sh[j][0].c]].pop_back();
-						map[sh[j][0].r][sh[j][0].c] = j;
-					}
-				}
-				else {
-					map[sh[j][0].r][sh[j][0].c] = j;
-				}
-			}
-		}
+	//	print();
+		sharkMove();
+
 
 	}
-	return ret;
+
+	return sum;
+
 }
+
+
 
 int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL); cout.tie(NULL);
+	
 
-	shark input;
 	cin >> R >> C >> M;
-	for (int i = 1; i <= M; i++) {
+	for (int i = 0; i < M; i++) {
+		Shark input;
 		cin >> input.r >> input.c >> input.s >> input.d >> input.z;
-		input.d--;
-		sh[i].push_back(input);
-		map[input.r][input.c] = i;
+		sh[input.z].push_back(input);
+		map[input.r][input.c] = input.z;
+		sharkQueue.push_back(input.z);
 	}
 
-	cout << solve() << "\n";
+	cout << getShark() << "\n";
 
 	return 0;
 }

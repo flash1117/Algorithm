@@ -1,4 +1,5 @@
-﻿  1062.cpp
-C:\Users\flash\Desktop\Algorithm\Brute_Force\Brute_Force\1062.cpp(22,21): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\flash\Desktop\Algorithm\Brute_Force\Brute_Force\1062.cpp(24,22): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
+﻿  15656.cpp
+C:\Users\flash\Desktop\Algorithm\Brute_Force\Brute_Force\15656.cpp(13,21): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\flash\Desktop\Algorithm\Brute_Force\Brute_Force\15656.cpp(19,12): warning C4018:  '>=': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\flash\Desktop\Algorithm\Brute_Force\Brute_Force\15656.cpp(22,20): warning C4018:  '<': signed 또는 unsigned가 일치하지 않습니다.
   Brute_Force.vcxproj -> C:\Users\flash\Desktop\Algorithm\Brute_Force\Debug\Brute_Force.exe
