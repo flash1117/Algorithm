@@ -130,8 +130,6 @@ void buildBridge() {
 
 	}
 
-
-
 }
 
 void printBridge() {
@@ -141,88 +139,16 @@ void printBridge() {
 	}
 }
 
-bool isValid() {
+int canAllTravel() {
 
+	int brCnt = 0;
+	vector<int> graph[100];
 	bool areaVisit[100];
 	for (int i = 1; i <= areaCnt; i++) {
 		areaVisit[i] = false;
 	}
 
-	bool _visited[10][10];
-
-	queue<Bridge> q;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < M; j++) {
-			_visited[i][j] = false;
-		}
-	}
-
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < M; j++) {
-			if (map[i][j] != 0 && !_visited[i][j]) {
-				q.push({i,j,0,0});
-				_visited[i][j] = true;
-
-				if (map[i][j] == -1);
-				else areaVisit[map[i][j]] = true;
-
-				break;
-			}
-		}
-	}
-
-	while (!q.empty()) {
-
-		int curX = q.front().startX;
-		int curY = q.front().startY;
-		int prev = q.front().cnt;
-		int dir = q.front().dir;
-
-		q.pop();
-
-	
-		for (int i = 0; i < 4; i++) {
-			int nextX = curX + dx[i];
-			int nextY = curY + dy[i];
-
-			if (isBoundary(nextX, nextY) && !_visited[nextX][nextY] && map[nextX][nextY] != 0) {
-				
-				
-				if (map[curX][curY] == -1 && map[nextX][nextY] != -1) {
-					q.push({ nextX, nextY ,0, i});
-					_visited[nextX][nextY] = true;
-					areaVisit[map[nextX][nextY]] = true;
-				}
-				else if (map[curX][curY] == -1 && dir == i) {
-					q.push({ nextX, nextY , 0,dir});
-					_visited[nextX][nextY] = true;
-				}
-				else {
-
-					q.push({ nextX, nextY , 0,i });
-
-				}
-
-			}
-			else if (isBoundary(nextX, nextY) && map[nextX][nextY] == -1 && map[curX][curY] == -1) {
-				q.push({ nextX, nextY , 0, i });
-				_visited[nextX][nextY] = true;
-			}
-		}
-
-
-	}
-//	cout << "areaCnt : " << areaCnt;
-	for (int i = 1; i <= areaCnt; i++) {
-		if (!areaVisit[i]) return false;
-	}
-	return true;
-
-}
-
-int canAllTravel() {
-
-	int brCnt = 0;
+	int src = 0, dst = 0;
 
 	for (int i = 0; i < pick.size(); i++) {
 
@@ -233,53 +159,66 @@ int canAllTravel() {
 		int ccnt = br[index].cnt;
 		int dir = br[index].dir;
 
-		for (int j = 0; j <= ccnt; j++) {
+		
+		for (int j = 0; j <= ccnt+1; j++) {
 			int nextX = curX + dx[dir] * j;
 			int nextY = curY + dy[dir] * j;
 
-			if (map[nextX][nextY] == 0 || map[nextX][nextY] == -1) {
-				map[nextX][nextY] = -1;
+			if (map[nextX][nextY] == 0) {
 				brCnt++;
 			}
-				
+			
+			if (j == 0) {
+				src = map[nextX][nextY];
+			}
+			else if (j == ccnt + 1) dst = map[nextX][nextY];
 		}
 
+		graph[src].push_back(dst);
+		graph[dst].push_back(src);
 	}
 	
+//	print();
+	queue<int> q;
+	q.push(src);
+	areaVisit[src] = true;
 
-	if (isValid()) {
-		print();
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < M; j++) {
-				map[i][j] = _map[i][j];
+	while (!q.empty()) {
+
+		int cur = q.front();
+		q.pop();
+
+		for (int i = 0; i < graph[cur].size(); i++) {
+			int next = graph[cur][i];
+
+			if (!areaVisit[next]) {
+				q.push(next);
+				areaVisit[next] = true;
 			}
 		}
 
-		return brCnt;
 	}
 
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < M; j++) {
-			map[i][j] = _map[i][j];
-		}
+	for (int i = 1; i <= areaCnt; i++) {
+		if (!areaVisit[i]) return -1;
 	}
 
-	
-	return -1;
+	if (src == 0 || dst == 0) return -1;
+	return brCnt;
 }
 
 void solve(int depth, int cnt) {
 
-	if (cnt == areaCnt)
+	if (cnt <= areaCnt)
 	{
 		int brCnt = canAllTravel();
-	//	cout << brCnt << "\n";
 		if (brCnt != -1) {
-			
+
 			ret = ret > brCnt ? brCnt : ret;
 		}
-		return;
+
 	}
+	else return;
 
 	if (depth >= br.size()) return;
 
@@ -287,6 +226,8 @@ void solve(int depth, int cnt) {
 	solve(depth + 1, cnt + 1);
 	pick.pop_back();
 	solve(depth + 1, cnt);
+
+	return;
 }
 
 
@@ -320,6 +261,6 @@ int main() {
 	solve(0,0);
 
 	if (ret == 101) cout << -1 << "\n";
-	else cout << ret << "\n";
+	else cout << ret<< "\n";
 	return 0;
 }

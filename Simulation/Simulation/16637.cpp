@@ -3,48 +3,101 @@
 
 using namespace std;
 
+const int INF = -987654321;
 int N;
-vector <char> op;
+string input;
 vector<int> num;
-int pick[20];
+vector<char> op;
 
-int solve(int index1, int index2) {
+int _max = INF;
+int changeCnt;
 
-	if (index2 >= op.size()) return 0;
+void solve(int depth) {
 
-	if (op[index2] == '+') {
+	if (depth >= input.length()) {
+		
+		int cur = num[0];
 
-		int sum1 = num[index1] + solve(index1 + 1, index2 + 1);
+		for (int i = 0; i < op.size(); i++) {
+
+			if (op[i] == '+') {
+				cur = cur + num[i + 1];
+			}
+			else if (op[i] == '-') {
+				cur = cur - num[i + 1];
+			}
+			else { // *
+				cur = cur * num[i + 1];
+			}
+		}
+
+		if (changeCnt == 0) {
+			_max = cur;
+			changeCnt++;
+		}
+		else {
+
+			_max = _max > cur ? _max : cur;
+		}
+
+
+		return;
+	}
+
+
+	if (depth < input.length()-1) {
+
+		num.push_back(input[depth] - '0');
+		op.push_back(input[depth + 1]);
+		solve(depth + 2);
+		num.pop_back();
+		op.pop_back();
+
+
+		int ret = 0;
+		if (input[depth + 1] == '*') {
+			ret = (input[depth] - '0') * (input[depth + 2] - '0');
+		}
+		else if (input[depth + 1] == '+') {
+			ret = (input[depth] - '0') + (input[depth + 2] - '0');
+		}
+		else if (input[depth + 1] == '-') {
+			ret = (input[depth] - '0') - (input[depth + 2] - '0');
+		}
+
+		if (depth + 3 >= input.length() -1 ) {
+			num.push_back(ret);
+			solve(depth + 3);
+			num.pop_back();
+		}
+		else {
+			num.push_back(ret);
+			op.push_back(input[depth + 3]);
+			solve(depth + 4);
+			op.pop_back();
+			num.pop_back();
+
+		}
+
 
 	}
-	else if (op[index2] == '-') {
+	else {
+
+		num.push_back(input[depth] - '0');
+		solve(depth + 2);
+		num.pop_back();
 
 	}
-	else { // *
 
-	}
-
-
-	
-
+	return;
 }
 
 int main() {
 
-	cin >> N;
-	for (int i = 0; i < N; i++) {
-		char input;
-		cin >> input;
-		if (input >= '0' && input <= '9') {
-			num.push_back(input - '0');
+	cin >> N >> input;
 
-		}
-		else {
-			op.push_back(input);
-
-		}
-	}
-
-
+	solve(0);
+	cout << _max << "\n";
 	return 0;
+
 }
