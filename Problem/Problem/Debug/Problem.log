@@ -1,2 +1,13 @@
-﻿  1927.cpp
-  Problem.vcxproj -> C:\Users\flash\Desktop\Algorithm\Problem\Debug\Problem.exe
+﻿  2751.cpp
+  sort.cpp
+  코드를 생성하고 있습니다...
+sort.obj : error LNK2005: "void __cdecl arraySwap(int *,int *)" (?arraySwap@@YAXPAH0@Z)이(가) 2751.obj에 이미 정의되어 있습니다.
+sort.obj : error LNK2005: "void __cdecl bubbleSort(int *)" (?bubbleSort@@YAXPAH@Z)이(가) 2751.obj에 이미 정의되어 있습니다.
+sort.obj : error LNK2005: "void __cdecl insertSort(int *)" (?insertSort@@YAXPAH@Z)이(가) 2751.obj에 이미 정의되어 있습니다.
+sort.obj : error LNK2005: "void __cdecl merge(int *,int *,int,int)" (?merge@@YAXPAH0HH@Z)이(가) 2751.obj에 이미 정의되어 있습니다.
+sort.obj : error LNK2005: "void __cdecl mergeSort(int *,int *,int,int)" (?mergeSort@@YAXPAH0HH@Z)이(가) 2751.obj에 이미 정의되어 있습니다.
+sort.obj : error LNK2005: "void __cdecl printArray(int *)" (?printArray@@YAXPAH@Z)이(가) 2751.obj에 이미 정의되어 있습니다.
+sort.obj : error LNK2005: "void __cdecl quickSort(int *,int,int)" (?quickSort@@YAXPAHHH@Z)이(가) 2751.obj에 이미 정의되어 있습니다.
+sort.obj : error LNK2005: "void __cdecl setArray(int *)" (?setArray@@YAXPAH@Z)이(가) 2751.obj에 이미 정의되어 있습니다.
+sort.obj : error LNK2005: _main이(가) 2751.obj에 이미 정의되어 있습니다.
+C:\Users\flash\Desktop\Algorithm\Problem\Debug\Problem.exe : fatal error LNK1169: 여러 번 정의된 기호가 있습니다.
