@@ -2,19 +2,23 @@
 
 using namespace std;
 
-pair<int, int> map[20][20];
+void test1(int& a) {
+
+	cout <<  &a << a << endl;
+	a++;
+}
+
+void test2(int* a) {
+
+	cout << a  << *a << endl;
+}
 
 int main() {
 
-	map[0][0].second = 1;
+	int a = 1;
 
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 20; j++) {
-			cout << map[i][j].second << " ";
-		}
-		cout << endl;
-	}
-
+	test1(a);
+	test2(&a);
 
 
 	return 0;
